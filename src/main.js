@@ -1,7 +1,12 @@
-import { createProfileTemplate, createNavigationTemplate, createSortTemplate,
-  createListTemplate, createShowMoreButtonTemplate, createCardTemplate,
-  createListTopTemplate, createListMostTemplate, createPopupTemplate,
-  createPopupDetailsTemplate, createPopupCommentsTemplate} from './export-view-proxy';
+import {createProfileTemplate} from './view/header-profile.js';
+import {createNavigationTemplate} from './view/main-navigation.js';
+import {createSortTemplate} from './view/sort.js';
+import {createListTemplate} from './view/list.js';
+import {createShowMoreButtonTemplate} from './view/show-more-button.js';
+import {createCardTemplate} from './view/list-card.js';
+import {createListTopTemplate} from './view/list-top-rated.js';
+import {createListMostTemplate} from './view/list-most-commented.js';
+import {createPopupTemplate} from './view/popup.js';
 
 const GENERAL_CARD_COUNT = 5;
 const ADDITION_CARD_COUNT = 2;
@@ -40,7 +45,3 @@ extraListContainers.forEach((container) => {
 });
 
 render(siteFooterElement, createPopupTemplate(), 'beforeend');
-
-const sitePopupElement = siteFooterElement.querySelector('.film-details__inner');
-render(sitePopupElement, createPopupDetailsTemplate(), 'beforeend');
-render(sitePopupElement, createPopupCommentsTemplate(), 'beforeend');
