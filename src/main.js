@@ -7,9 +7,14 @@ import {createCardTemplate} from './view/list-card.js';
 import {createListTopTemplate} from './view/list-top-rated.js';
 import {createListMostTemplate} from './view/list-most-commented.js';
 import {createPopupTemplate} from './view/popup.js';
+import { generateMovie } from './mock/movie.js';
+
 
 const GENERAL_CARD_COUNT = 5;
 const ADDITION_CARD_COUNT = 2;
+
+const movies = new Array(GENERAL_CARD_COUNT).fill().map(generateMovie);
+
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -45,3 +50,6 @@ extraListContainers.forEach((container) => {
 });
 
 render(siteFooterElement, createPopupTemplate(), 'beforeend');
+
+console.log (movies);
+
