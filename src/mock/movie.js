@@ -32,13 +32,13 @@ const ACTORS = [
 const COUNTRIES = ['Russia', 'USA', 'England', 'France', 'Spain', 'Italy', 'Japan'];
 
 const POSTERS = [
-  'public/images/posters/made-for-each-other.png',
-  'public/images/posters/popeye-meets-sinbad.png',
-  'public/images/posters/sagebrush-trail.jpg',
-  'public/images/posters/santa-claus-conquers-the-martians.jpg',
-  'public/images/posters/the-dance-of-life.jpg',
-  'public/images/posters/the-great-flamarion.jpg',
-  'public/images/posters/the-man-with-the-golden-arm.jpg',
+  './images/posters/made-for-each-other.png',
+  './images/posters/popeye-meets-sinbad.png',
+  './images/posters/sagebrush-trail.jpg',
+  './images/posters/santa-claus-conquers-the-martians.jpg',
+  './images/posters/the-dance-of-life.jpg',
+  './images/posters/the-great-flamarion.jpg',
+  './images/posters/the-man-with-the-golden-arm.jpg',
 ];
 
 
@@ -62,13 +62,14 @@ const generateComment = () => {
   return comments;
 };
 
-const generateDate = () => dayjs().add(getRandomInteger(-360, 0), 'day').format('YYYY/MM/DDTHH:mm');
+const generateDate = () => dayjs().add(getRandomInteger(-360, 0), 'day').format();
 
 let movieCount = 1;
 
 export const generateMovie = () => {
   const alreadyWatched = Boolean(getRandomInteger(0, 1));
-  const watchingDate = (alreadyWatched)? generateDate() : null;
+  const watchingDate = (alreadyWatched)? generateDate() : '';
+
 
   return {
     id: `${movieCount++}`,
@@ -83,7 +84,7 @@ export const generateMovie = () => {
       writers: getRandomArrayNonRepeat(WRITERS),
       actors: getRandomArrayNonRepeat(ACTORS),
       release: {
-        date: dayjs().add(getRandomInteger(-50, 0), 'year').format('YYYY/MM/DDTHH:mm'),
+        date: dayjs().add(getRandomInteger(-50, 0), 'year').format(),
         releaseCountry: getRandomArrayElement(COUNTRIES),
       },
       runtime: getRandomInteger(60,240),
@@ -95,6 +96,7 @@ export const generateMovie = () => {
       alreadyWatched,
       watchingDate,
       favorite: Boolean(getRandomInteger(0, 1)),
+
     },
   };
 };

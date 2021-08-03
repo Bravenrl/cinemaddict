@@ -10,7 +10,8 @@ import {createPopupTemplate} from './view/popup.js';
 import { generateMovie } from './mock/movie.js';
 
 
-const GENERAL_CARD_COUNT = 5;
+const GENERAL_CARD_COUNT = 20;
+const GENERAL_CARD_COUNT_PER_STEP = 5;
 const ADDITION_CARD_COUNT = 2;
 
 const movies = new Array(GENERAL_CARD_COUNT).fill().map(generateMovie);
@@ -34,8 +35,8 @@ const generalListContainer = siteFilmsElement.querySelector('.films-list__contai
 
 render(siteFilmsElement, createShowMoreButtonTemplate(), 'beforeend');
 
-for (let i = 0; i < GENERAL_CARD_COUNT; i++) {
-  render(generalListContainer, createCardTemplate(), 'beforeend');
+for (let i = 0; i < Math.min(movies.length, GENERAL_CARD_COUNT_PER_STEP); i++) {
+  render(generalListContainer, createCardTemplate(movies[i]), 'beforeend');
 }
 
 render(siteFilmsElement, createListTopTemplate(), 'beforeend');
@@ -49,7 +50,6 @@ extraListContainers.forEach((container) => {
   }
 });
 
-render(siteFooterElement, createPopupTemplate(), 'beforeend');
+render(siteFooterElement, createPopupTemplate(movies[0]), 'beforeend');
 
-console.log (movies);
 

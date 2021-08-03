@@ -27,4 +27,13 @@ const getRandomArrayNonRepeat = (elements) => {                                 
   return sortArrayNonRepeat;
 };
 
-export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement};
+const humanizeMovieTime = (time) => {
+  let mins = time % 60;
+  let hours = (time - mins) / 60;
+  if (mins < 10) {mins = `0${  mins}`;}
+  if (hours < 10) {hours = `${  hours}`;}
+  return (`${hours  }h ${  mins}m`);
+};
+
+
+export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement, humanizeMovieTime};
