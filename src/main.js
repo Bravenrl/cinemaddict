@@ -6,8 +6,11 @@ import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createCardTemplate} from './view/list-card.js';
 import {createListTopTemplate} from './view/list-top-rated.js';
 import {createListMostTemplate} from './view/list-most-commented.js';
+import { createFooterStatisticTemplate } from './view/footer-statistic.js';
 import {createPopupTemplate} from './view/popup.js';
 import { generateMovie } from './mock/movie.js';
+import { compareTotalRating } from './utils.js';
+import { compareComments } from './utils.js';
 
 
 const GENERAL_CARD_COUNT = 20;
@@ -15,7 +18,8 @@ const GENERAL_CARD_COUNT_PER_STEP = 5;
 const ADDITION_CARD_COUNT = 2;
 
 const movies = new Array(GENERAL_CARD_COUNT).fill().map(generateMovie);
-
+const topRaited = movies.slice().sort(compareTotalRating).reverse();
+const mostCommented = movies.slice().sort(compareComments).reverse();
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -25,8 +29,8 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-render(siteHeaderElement, createProfileTemplate(), 'beforeend');
-render(siteMainElement, createNavigationTemplate(), 'beforeend');
+render(siteHeaderElement, createProfileTemplate(movies), 'beforeend');
+render(siteMainElement, createNavigationTemplate(movies), 'beforeend');
 render(siteMainElement, createSortTemplate(), 'beforeend');
 render(siteMainElement, createListTemplate(), 'beforeend');
 
@@ -42,14 +46,19 @@ for (let i = 0; i < Math.min(movies.length, GENERAL_CARD_COUNT_PER_STEP); i++) {
 render(siteFilmsElement, createListTopTemplate(), 'beforeend');
 render(siteFilmsElement, createListMostTemplate(), 'beforeend');
 
+
 const extraListContainers = siteFilmsElement.querySelectorAll('.films-list--extra');
 extraListContainers.forEach((container) => {
   const cardContainer = container.querySelector('.films-list__container');
+  const cardTitile = container.querySelector('.films-list__title');
   for (let i = 0; i < ADDITION_CARD_COUNT; i++) {
-    render(cardContainer, createCardTemplate(), 'beforeend');
+    if (cardTitile.textContent==='Top rated') {
+      render(cardContainer, createCardTemplate(topRaited[i]), 'beforeend');
+    } else {render(cardContainer, createCardTemplate(mostCommented[i]), 'beforeend');}
   }
 });
 
+render(siteFooterElement, createFooterStatisticTemplate(movies.length), 'beforeend');
 render(siteFooterElement, createPopupTemplate(movies[0]), 'beforeend');
 
 

@@ -35,5 +35,22 @@ const humanizeMovieTime = (time) => {
   return (`${hours  }h ${  mins}m`);
 };
 
-
-export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement, humanizeMovieTime};
+const compareTotalRating = (objA, objB) => {
+  if (objA.filmInfo.totalRating > objB.filmInfo.totalRating) {
+    return 1;
+  }
+  if (objA.filmInfo.totalRating < objB.filmInfo.totalRating) {
+    return -1;
+  }
+  return 0;
+};
+const compareComments = (objA, objB) => {
+  if (objA.comments.length > objB.comments.length) {
+    return 1;
+  }
+  if (objA.comments.length < objB.comments.length) {
+    return -1;
+  }
+  return 0;
+};
+export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement, humanizeMovieTime, compareComments, compareTotalRating};

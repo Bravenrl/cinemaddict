@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import AdvancedFormat from 'dayjs/plugin/relativeTime';
 import { humanizeMovieTime } from '../utils.js';
-import { EMOJI } from '../const.js';
+import { Emoji } from '../const.js';
 
 
 const isActive = (details) => {
@@ -25,7 +25,7 @@ const createCommentsTemplate = (comments) => (`
         ${comments.map((comment) =>
     `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src=${EMOJI[comment.emotion]} width="55" height="55" alt="emoji-smile">
+              <img src=${Emoji[comment.emotion]} width="55" height="55" alt="emoji-smile">
             </span>
             <div>
               <p class="film-details__comment-text">${comment.comment}</p>
