@@ -1,12 +1,10 @@
-import dayjs from 'dayjs';
 import { humanizeMovieTime } from '../utils.js';
+import { getYear } from '../utils.js';
 
 const isActive = (details) => {
   if (details) {return 'film-card__controls-item--active';
   } else {return '';}
 };
-
-const getYear = (date) => dayjs(date).format('YYYY');
 
 const getDescription = (descriptions) => {
   const fullDescription = descriptions.join(' ');
@@ -14,6 +12,7 @@ const getDescription = (descriptions) => {
   }
   return fullDescription;
 };
+
 export const createCardTemplate = (movie) => {
   const {comments, filmInfo,  userDetails} = movie;
 

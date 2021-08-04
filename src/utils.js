@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import AdvancedFormat from 'dayjs/plugin/relativeTime';
+
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -35,6 +38,11 @@ const humanizeMovieTime = (time) => {
   return (`${hours  }h ${  mins}m`);
 };
 
+dayjs.extend(AdvancedFormat);
+const getCommentDate = (commentDate) => dayjs(commentDate).fromNow();
+const getYear = (date) => dayjs(date).format('YYYY');
+const getReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
+
 const compareTotalRating = (objA, objB) => {
   if (objA.filmInfo.totalRating > objB.filmInfo.totalRating) {
     return 1;
@@ -44,6 +52,7 @@ const compareTotalRating = (objA, objB) => {
   }
   return 0;
 };
+
 const compareComments = (objA, objB) => {
   if (objA.comments.length > objB.comments.length) {
     return 1;
@@ -53,4 +62,6 @@ const compareComments = (objA, objB) => {
   }
   return 0;
 };
-export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement, humanizeMovieTime, compareComments, compareTotalRating};
+export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat,
+  getRandomArrayElement, humanizeMovieTime, compareComments, compareTotalRating,
+  getYear, getCommentDate, getReleaseDate};

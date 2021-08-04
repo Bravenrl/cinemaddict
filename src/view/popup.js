@@ -1,7 +1,7 @@
-import dayjs from 'dayjs';
-import AdvancedFormat from 'dayjs/plugin/relativeTime';
 import { humanizeMovieTime } from '../utils.js';
 import { Emoji } from '../const.js';
+import { getCommentDate } from '../utils.js';
+import { getReleaseDate } from '../utils.js';
 
 
 const isActive = (details) => {
@@ -17,9 +17,6 @@ const createGenresTemplate = (genres) => (
     `<span class="film-details__genre">${genre}</span>`).join('')}
     </tr>
     `);
-
-dayjs.extend(AdvancedFormat);
-const getCommentDate = (commentDate) => dayjs(commentDate).fromNow();
 
 const createCommentsTemplate = (comments) => (`
         ${comments.map((comment) =>
@@ -38,8 +35,6 @@ const createCommentsTemplate = (comments) => (`
           </li>
           `).join('')};
           `);
-
-const getDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
 export const createPopupTemplate = (movie) => {
   const {comments, filmInfo,  userDetails} = movie;
@@ -84,7 +79,7 @@ export const createPopupTemplate = (movie) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${getDate(filmInfo.release.date)}</td>
+              <td class="film-details__cell">${getReleaseDate(filmInfo.release.date)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
