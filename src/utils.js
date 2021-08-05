@@ -43,25 +43,11 @@ const getCommentDate = (commentDate) => dayjs(commentDate).fromNow();
 const getYear = (date) => dayjs(date).format('YYYY');
 const getReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
-const compareTotalRating = (objA, objB) => {
-  if (objA.filmInfo.totalRating > objB.filmInfo.totalRating) {
-    return 1;
-  }
-  if (objA.filmInfo.totalRating < objB.filmInfo.totalRating) {
-    return -1;
-  }
-  return 0;
-};
+const compareTotalRating = (objA, objB) => objB.filmInfo.totalRating - objA.filmInfo.totalRating;
 
-const compareComments = (objA, objB) => {
-  if (objA.comments.length > objB.comments.length) {
-    return 1;
-  }
-  if (objA.comments.length < objB.comments.length) {
-    return -1;
-  }
-  return 0;
-};
+
+const compareComments = (objA, objB) => objB.comments.length - objA.comments.length;
+
 export {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat,
   getRandomArrayElement, humanizeMovieTime, compareComments, compareTotalRating,
   getYear, getCommentDate, getReleaseDate};

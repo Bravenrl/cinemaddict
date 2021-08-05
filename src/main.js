@@ -4,8 +4,7 @@ import {createSortTemplate} from './view/sort.js';
 import {createListTemplate} from './view/list.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createCardTemplate} from './view/list-card.js';
-import {createListTopTemplate} from './view/list-top-rated.js';
-import {createListMostTemplate} from './view/list-most-commented.js';
+import {createListExtraTemplate} from './view/list-extra.js';
 import { createFooterStatisticTemplate } from './view/footer-statistic.js';
 import {createPopupTemplate} from './view/popup.js';
 import { generateMovie } from './mock/movie.js';
@@ -16,10 +15,12 @@ import { compareComments } from './utils.js';
 const GENERAL_CARD_COUNT = 20;
 const GENERAL_CARD_COUNT_PER_STEP = 5;
 const ADDITION_CARD_COUNT = 2;
+const TITLE_TOP_RATED = 'Top rated';
+const TITLE_MOST_COMMENTED = 'Most commented';
 
 const movies = new Array(GENERAL_CARD_COUNT).fill().map(generateMovie);
-const topRaited = movies.slice().sort(compareTotalRating).reverse();
-const mostCommented = movies.slice().sort(compareComments).reverse();
+const topRaited = movies.slice().sort(compareTotalRating);
+const mostCommented = movies.slice().sort(compareComments);
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -63,16 +64,16 @@ if (movies.length > GENERAL_CARD_COUNT_PER_STEP) {
   });
 }
 
-render(siteFilmsElement, createListTopTemplate(), 'beforeend');
-render(siteFilmsElement, createListMostTemplate(), 'beforeend');
+render(siteFilmsElement, createListExtraTemplate(TITLE_TOP_RATED), 'beforeend');
+render(siteFilmsElement, createListExtraTemplate(TITLE_MOST_COMMENTED), 'beforeend');
 
 
 const extraListContainers = siteFilmsElement.querySelectorAll('.films-list--extra');
 extraListContainers.forEach((container) => {
   const cardContainer = container.querySelector('.films-list__container');
-  const cardTitile = container.querySelector('.films-list__title');
+  const cardTitle = container.querySelector('.films-list__title');
   for (let i = 0; i < ADDITION_CARD_COUNT; i++) {
-    if (cardTitile.textContent==='Top rated') {
+    if (cardTitle.textContent==='Top rated') {
       render(cardContainer, createCardTemplate(topRaited[i]), 'beforeend');
     } else {render(cardContainer, createCardTemplate(mostCommented[i]), 'beforeend');}
   }
