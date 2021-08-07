@@ -1,3 +1,4 @@
+import { createElement } from '../utils.js';
 import { humanizeMovieTime } from '../utils.js';
 import { Emoji } from '../const.js';
 import { getCommentDate } from '../utils.js';
@@ -36,7 +37,7 @@ const createCommentsTemplate = (comments) => (`
           `).join('')};
           `);
 
-export const createPopupTemplate = (movie) => {
+const createPopupTemplate = (movie) => {
   const {comments, filmInfo,  userDetails} = movie;
 
   return `<section class="film-details">
@@ -147,3 +148,25 @@ export const createPopupTemplate = (movie) => {
   </form>
 </section>`;
 };
+
+export default class Popup {
+  constructor(movie) {
+    this._element = null;
+    this._movie = movie;
+  }
+
+  getTemplate () {
+    return createPopupTemplate(this._movie);
+  }
+
+  getElement () {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}

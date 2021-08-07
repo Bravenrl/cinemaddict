@@ -1,3 +1,4 @@
+import { createElement } from '../utils.js';
 import { humanizeMovieTime } from '../utils.js';
 import { getYear } from '../utils.js';
 
@@ -13,7 +14,7 @@ const getDescription = (descriptions) => {
   return fullDescription;
 };
 
-export const createCardTemplate = (movie) => {
+const createCardTemplate = (movie) => {
   const {comments, filmInfo,  userDetails} = movie;
 
   return `<article class="film-card">
@@ -34,3 +35,26 @@ export const createCardTemplate = (movie) => {
     </div>
   </article>`;
 };
+
+export default class MovieCard {
+  constructor(movie) {
+    this._element = null;
+    this._movie = movie;
+  }
+
+  getTemplate () {
+    return createCardTemplate(this._movie);
+  }
+
+  getElement () {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}
+
