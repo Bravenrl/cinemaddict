@@ -22,8 +22,20 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-export const GENERAL_CARD_COUNT = 20;
-export const GENERAL_CARD_COUNT_PER_STEP = 5;
-export const ADDITION_CARD_COUNT = 2;
-export const TITLE_TOP_RATED = 'Top rated';
-export const TITLE_MOST_COMMENTED = 'Most commented';
+export const CardCount = {
+  GENERAL: 20,
+  GENERAL_PER_STEP: 5,
+  ADDITION: 2,
+};
+
+export const ExtraCardTitle = {
+  TOP_RATED: 'Top rated',
+  MOST_COMMENTED : 'Most commented',
+};
+
+export const ListTitle = {
+  ALL_MOVIES: 'All movies. Upcoming',
+  EMPTY: 'There are no movies in our database',
+  LOADING: 'Loading...',
+};
+

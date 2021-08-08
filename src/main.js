@@ -10,12 +10,11 @@ import MovieCardView from './view/list-card.js';
 import PopupView from './view/popup.js';
 import ListContainerView from './view/list-container.js';
 import { generateMovie } from './mock/movie.js';
-import { RenderPosition, GENERAL_CARD_COUNT, GENERAL_CARD_COUNT_PER_STEP,
-  ADDITION_CARD_COUNT, TITLE_MOST_COMMENTED, TITLE_TOP_RATED} from './const.js';
+import { RenderPosition, ExtraCardTitle, CardCount, ListTitle } from './const.js';
 import { compareTotalRating, compareComments, render } from './utils.js';
 
 
-const movies = new Array(GENERAL_CARD_COUNT).fill().map(generateMovie);
+const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
 const topRaited = movies.slice().sort(compareTotalRating);
 const mostCommented = movies.slice().sort(compareComments);
 
@@ -31,25 +30,25 @@ render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsComponent = new FilmsView();
 render(siteMainElement, filmsComponent.getElement(), RenderPosition.BEFOREEND);
-render(filmsComponent.getElement(), new ListView().getElement(), RenderPosition.AFTERBEGIN);
+render(filmsComponent.getElement(), new ListView(ListTitle.ALL_MOVIES).getElement(), RenderPosition.AFTERBEGIN);
 
 
 const generalContainerComponent = new ListContainerView();
 render(filmsComponent.getElement(), generalContainerComponent.getElement(), RenderPosition.BEFOREEND);
-for (let i = 0; i < Math.min(movies.length, GENERAL_CARD_COUNT_PER_STEP); i++) {
+for (let i = 0; i < Math.min(movies.length, CardCount.GENERAL_PER_STEP); i++) {
   render(generalContainerComponent.getElement(), new MovieCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
-if (movies.length > GENERAL_CARD_COUNT_PER_STEP) {
-  let renderedMovieCount = GENERAL_CARD_COUNT_PER_STEP;
+if (movies.length > CardCount.GENERAL_PER_STEP) {
+  let renderedMovieCount = CardCount.GENERAL_PER_STEP;
   const showMoreButtonComponent = new ShowMoreButtonView();
   render(filmsComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
   showMoreButtonComponent.getElement().addEventListener('click', (evt) => {
     evt.preventDefault();
     movies
-      .slice(renderedMovieCount, renderedMovieCount + GENERAL_CARD_COUNT_PER_STEP)
+      .slice(renderedMovieCount, renderedMovieCount + CardCount.GENERAL_PER_STEP)
       .forEach((movie) => render(generalContainerComponent.getElement(), new MovieCardView(movie).getElement(), RenderPosition.BEFOREEND));
-    renderedMovieCount += GENERAL_CARD_COUNT_PER_STEP;
+    renderedMovieCount += CardCount.GENERAL_PER_STEP;
     if (renderedMovieCount >= movies.length) {
       showMoreButtonComponent.getElement().remove();
       showMoreButtonComponent.removeElement();
@@ -57,19 +56,19 @@ if (movies.length > GENERAL_CARD_COUNT_PER_STEP) {
   });
 }
 
-const listTopRated = new ListExtraView(TITLE_TOP_RATED);
+const listTopRated = new ListExtraView(ExtraCardTitle.TOP_RATED);
 render(filmsComponent.getElement(), listTopRated.getElement(), RenderPosition.BEFOREEND);
 const topContainerComponent = new ListContainerView();
 render(listTopRated.getElement(), topContainerComponent.getElement(), RenderPosition.BEFOREEND);
-for (let i = 0; i < ADDITION_CARD_COUNT; i++) {
+for (let i = 0; i < CardCount.ADDITION; i++) {
   render(topContainerComponent.getElement(), new MovieCardView(topRaited[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
-const listMostCommented = new ListExtraView(TITLE_MOST_COMMENTED);
+const listMostCommented = new ListExtraView(ExtraCardTitle.MOST_COMMENTED);
 render(filmsComponent.getElement(), listMostCommented.getElement(), RenderPosition.BEFOREEND);
 const mostContainerComponent = new ListContainerView();
 render(listMostCommented.getElement(), mostContainerComponent.getElement(), RenderPosition.BEFOREEND);
-for (let i = 0; i < ADDITION_CARD_COUNT; i++) {
+for (let i = 0; i < CardCount.ADDITION; i++) {
   render(mostContainerComponent.getElement(), new MovieCardView(mostCommented[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
