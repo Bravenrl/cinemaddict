@@ -34,7 +34,7 @@ const createCommentsTemplate = (comments) => (`
               </p>
             </div>
           </li>
-          `).join('')};
+          `).join('')}
           `);
 
 const createPopupTemplate = (movie) => {

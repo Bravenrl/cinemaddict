@@ -39,3 +39,8 @@ export const ListTitle = {
   LOADING: 'Loading...',
 };
 
+export const CssClass = {
+  SECTION: 'films-list--extra',
+  HEADING: 'visually-hidden',
+};
+
