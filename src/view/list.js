@@ -2,10 +2,9 @@ import { createElement } from '../utils.js';
 
 const createListTemplate = (title) => (
   `<section class="films-list">
-        <h2 class="films-list__title visually-hidden">${title}</h2>
+        <h2 class="films-list__title">${title}</h2>
     </section>`
 );
-
 export default class List {
   constructor (title) {
     this._element = null;

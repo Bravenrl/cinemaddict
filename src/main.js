@@ -30,48 +30,100 @@ render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsComponent = new FilmsView();
 render(siteMainElement, filmsComponent.getElement(), RenderPosition.BEFOREEND);
-render(filmsComponent.getElement(), new ListView(ListTitle.ALL_MOVIES).getElement(), RenderPosition.AFTERBEGIN);
 
+const renderMovieCard = (element, allMovies) => {
+  const movieCardComponent = new MovieCardView(allMovies);
+  const popupComponent = new PopupView(allMovies);
+  render(element, movieCardComponent.getElement(), RenderPosition.BEFOREEND);
 
-const generalContainerComponent = new ListContainerView();
-render(filmsComponent.getElement(), generalContainerComponent.getElement(), RenderPosition.BEFOREEND);
-for (let i = 0; i < Math.min(movies.length, CardCount.GENERAL_PER_STEP); i++) {
-  render(generalContainerComponent.getElement(), new MovieCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
+  const showPopup = () => {
+    const popup = siteFooterElement.querySelector('.film-details');
+    if (siteFooterElement.contains(popup)) {popup.remove();
+      siteFooterElement.appendChild(popupComponent.getElement());
+      return;}
+    document.body.classList.add('hide-overflow');
+    siteFooterElement.appendChild(popupComponent.getElement());
+  };
+  const hidePopup = () => {
+    document.body.classList.remove('hide-overflow');
+    siteFooterElement.removeChild(popupComponent.getElement());
+  };
+
+  movieCardComponent.getElement().querySelector('.film-card__poster').
+    addEventListener('click', () => {
+      showPopup();
+    });
+  movieCardComponent.getElement().querySelector('.film-card__title').
+    addEventListener('click', () => {
+      showPopup();
+    });
+  movieCardComponent.getElement().querySelector('.film-card__comments').
+    addEventListener('click', () => {
+      showPopup();
+    });
+  popupComponent.getElement().querySelector('.film-details__close-btn').
+    addEventListener('click', () => {
+      hidePopup();
+    });
+};
+
+const renderList = (element, allMovies) => {
+  const containerComponent = new ListContainerView();
+  render(element, containerComponent.getElement(), RenderPosition.BEFOREEND);
+  allMovies
+    .slice(0, Math.min(allMovies.length, CardCount.GENERAL_PER_STEP))
+    .forEach((movie) => renderMovieCard(containerComponent.getElement(), movie));
+
+  if (allMovies.length > CardCount.GENERAL_PER_STEP) {
+    let renderedMovieCount = CardCount.GENERAL_PER_STEP;
+    const showMoreButtonComponent = new ShowMoreButtonView();
+    render(element, showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+
+    showMoreButtonComponent.getElement().addEventListener('click', (evt) => {
+      evt.preventDefault();
+      allMovies
+        .slice(renderedMovieCount, renderedMovieCount + CardCount.GENERAL_PER_STEP)
+        .forEach((movie) => render(containerComponent.getElement(), new MovieCardView(movie).getElement(), RenderPosition.BEFOREEND));
+      renderedMovieCount += CardCount.GENERAL_PER_STEP;
+      if (renderedMovieCount >= allMovies.length) {
+        showMoreButtonComponent.getElement().remove();
+        showMoreButtonComponent.removeElement();
+      }
+    });
+  }
+};
+
+const renderListExtra = (element, title, extraMovies) => {
+  const listTopRated = new ListExtraView(title);
+  const containerComponent = new ListContainerView();
+  render(element, listTopRated.getElement(), RenderPosition.BEFOREEND);
+  render(listTopRated.getElement(), containerComponent.getElement(), RenderPosition.BEFOREEND);
+  extraMovies
+    .slice(0, Math.min(extraMovies.length, CardCount.ADDITION))
+    .forEach((extraMovie) => renderMovieCard(containerComponent.getElement(), extraMovie));
+};
+
+const renderListComponent = (allMovies) => {
+  if (movies.length !== 0) {
+    const listComponent = new ListView(ListTitle.ALL_MOVIES);
+    render(filmsComponent.getElement(), listComponent.getElement(), RenderPosition.AFTERBEGIN);
+    listComponent.getElement().querySelector('h2').classList.add('visually-hidden');
+    renderList (listComponent.getElement(), allMovies);
+    return;
+  }
+  render(filmsComponent.getElement(), new ListView(ListTitle.EMPTY).getElement(), RenderPosition.AFTERBEGIN);
+};
+
+renderListComponent(movies);
+
+if (topRaited.shift().filmInfo.totalRating !== 0) {
+  renderListExtra(filmsComponent.getElement(), ExtraCardTitle.TOP_RATED, topRaited);
 }
 
-if (movies.length > CardCount.GENERAL_PER_STEP) {
-  let renderedMovieCount = CardCount.GENERAL_PER_STEP;
-  const showMoreButtonComponent = new ShowMoreButtonView();
-  render(filmsComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
-  showMoreButtonComponent.getElement().addEventListener('click', (evt) => {
-    evt.preventDefault();
-    movies
-      .slice(renderedMovieCount, renderedMovieCount + CardCount.GENERAL_PER_STEP)
-      .forEach((movie) => render(generalContainerComponent.getElement(), new MovieCardView(movie).getElement(), RenderPosition.BEFOREEND));
-    renderedMovieCount += CardCount.GENERAL_PER_STEP;
-    if (renderedMovieCount >= movies.length) {
-      showMoreButtonComponent.getElement().remove();
-      showMoreButtonComponent.removeElement();
-    }
-  });
-}
-
-const listTopRated = new ListExtraView(ExtraCardTitle.TOP_RATED);
-render(filmsComponent.getElement(), listTopRated.getElement(), RenderPosition.BEFOREEND);
-const topContainerComponent = new ListContainerView();
-render(listTopRated.getElement(), topContainerComponent.getElement(), RenderPosition.BEFOREEND);
-for (let i = 0; i < CardCount.ADDITION; i++) {
-  render(topContainerComponent.getElement(), new MovieCardView(topRaited[i]).getElement(), RenderPosition.BEFOREEND);
-}
-
-const listMostCommented = new ListExtraView(ExtraCardTitle.MOST_COMMENTED);
-render(filmsComponent.getElement(), listMostCommented.getElement(), RenderPosition.BEFOREEND);
-const mostContainerComponent = new ListContainerView();
-render(listMostCommented.getElement(), mostContainerComponent.getElement(), RenderPosition.BEFOREEND);
-for (let i = 0; i < CardCount.ADDITION; i++) {
-  render(mostContainerComponent.getElement(), new MovieCardView(mostCommented[i]).getElement(), RenderPosition.BEFOREEND);
+if (mostCommented.shift().comments.length !== 0) {
+  renderListExtra(filmsComponent.getElement(), ExtraCardTitle.MOST_COMMENTED, mostCommented);
 }
 
 
 render(siteFooterElement, new FooterStatisticView(movies.length).getElement(), RenderPosition.BEFOREEND);
-render(siteFooterElement, new PopupView(movies[0]).getElement(), RenderPosition.BEFOREEND);
+
