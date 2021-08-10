@@ -65,3 +65,5 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
+
+export const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';

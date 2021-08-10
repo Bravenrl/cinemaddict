@@ -20,7 +20,8 @@ import {
 import {
   compareTotalRating,
   compareComments,
-  render
+  render,
+  isEscEvent
 } from './utils.js';
 
 
@@ -56,19 +57,42 @@ const renderMovieCard = (element, movie) => {
     document.body.classList.add('hide-overflow');
     siteFooterElement.appendChild(popupComponent.getElement());
   };
+
   const hidePopup = () => {
     document.body.classList.remove('hide-overflow');
     siteFooterElement.removeChild(popupComponent.getElement());
   };
 
+  const onPopupEscKeydown = (evt) => {
+    if (isEscEvent(evt)) {
+      evt.preventDefault();
+      document.removeEventListener('keydown', onPopupEscKeydown);
+      hidePopup();
+    }
+  };
+
   movieCardComponent.getElement().querySelector('.film-card__poster').
-    addEventListener('click', showPopup);
+    addEventListener('click', () => {
+      showPopup();
+      document.addEventListener('keydown', onPopupEscKeydown);
+    });
   movieCardComponent.getElement().querySelector('.film-card__title').
-    addEventListener('click', showPopup);
+    addEventListener('click', () => {
+      showPopup();
+      document.addEventListener('keydown', onPopupEscKeydown);
+    });
+
   movieCardComponent.getElement().querySelector('.film-card__comments').
-    addEventListener('click', showPopup);
+    addEventListener('click', () => {
+      showPopup();
+      document.addEventListener('keydown', onPopupEscKeydown);
+    });
+
   popupComponent.getElement().querySelector('.film-details__close-btn').
-    addEventListener('click', hidePopup);
+    addEventListener('click', () => {
+      hidePopup();
+      document.removeEventListener('keydown', onPopupEscKeydown);
+    });
 };
 
 const renderList = (element, allMovies) => {
