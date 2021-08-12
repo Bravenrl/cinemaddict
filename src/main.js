@@ -37,25 +37,26 @@ render(siteMainElement, filmsComponent, RenderPosition.BEFOREEND);
 
 const renderMovieCard = (element, movie) => {
   const movieCardComponent = new MovieCardView(movie);
-  const popupComponent = new PopupView(movie);
   render(element, movieCardComponent, RenderPosition.BEFOREEND);
 
-  const onPopupEscKeydown = (evt) => {
-    if (isEscEvent(evt)) {
-      evt.preventDefault();
+  movieCardComponent.setClickHandler(() => {
+    const popupComponent = new PopupView(movie);
+
+    const onPopupEscKeydown = (evt) => {
+      if (isEscEvent(evt)) {
+        evt.preventDefault();
+        hidePopup(siteFooterElement, popupComponent);
+        document.removeEventListener('keydown', onPopupEscKeydown);
+      }
+    };
+
+    popupComponent.setClickHandler(() => {
       hidePopup(siteFooterElement, popupComponent);
       document.removeEventListener('keydown', onPopupEscKeydown);
-    }
-  };
+    });
 
-  movieCardComponent.setClickHandler(() => {
     showPopup(siteFooterElement, popupComponent);
     document.addEventListener('keydown', onPopupEscKeydown);
-  });
-
-  popupComponent.setClickHandler(() => {
-    hidePopup(siteFooterElement, popupComponent);
-    document.removeEventListener('keydown', onPopupEscKeydown);
   });
 };
 
