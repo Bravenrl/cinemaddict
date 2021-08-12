@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import Abstract from './absrtact';
 
 const getHistoryCount = (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched).length;
 const getWatchlistCount = (movies) => movies.filter((movie) => movie.userDetails.watchlist).length;
@@ -16,24 +16,13 @@ const createNavigationTemplate = (movies) => (
   </nav>`
 );
 
-export default class Navigation {
+export default class Navigation extends Abstract {
   constructor(movies) {
-    this._element = null;
+    super();
     this._movies = movies;
   }
 
   getTemplate () {
     return createNavigationTemplate(this._movies);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
