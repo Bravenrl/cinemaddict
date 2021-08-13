@@ -1,8 +1,8 @@
-import { createElement } from '../utils.js';
-import { humanizeMovieTime } from '../utils.js';
+import Abstract from './absrtact';
+import { humanizeMovieTime } from '../utils/movie.js';
 import { Emoji } from '../const.js';
-import { getCommentDate } from '../utils.js';
-import { getReleaseDate } from '../utils.js';
+import { getCommentDate } from '../utils/movie.js';
+import { getReleaseDate } from '../utils/movie.js';
 
 
 const isActive = (details) => {
@@ -149,24 +149,24 @@ const createPopupTemplate = (movie) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends Abstract {
   constructor(movie) {
-    this._element = null;
+    super();
     this._movie = movie;
+    this._clickHandler = this._clickHandler.bind(this);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.onPopupClick();
+  }
+
+  setClickHandler(callback) {
+    this._callback.onPopupClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 
   getTemplate () {
     return createPopupTemplate(this._movie);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import Abstract from './absrtact';
 import { ProfileRank } from '../const';
 
 const getRating = (movies) => {
@@ -16,24 +16,13 @@ const createProfileTemplate = (movies) => (
   </section>`
 );
 
-export default class HeaderProfile {
+export default class HeaderProfile extends Abstract {
   constructor(movies) {
-    this._element = null;
+    super();
     this._movies = movies;
   }
 
   getTemplate () {
     return createProfileTemplate(this._movies);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }

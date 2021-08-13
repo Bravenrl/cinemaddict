@@ -1,7 +1,3 @@
-import dayjs from 'dayjs';
-import AdvancedFormat from 'dayjs/plugin/relativeTime';
-import { RenderPosition } from './const.js';
-
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -30,40 +26,3 @@ export const getRandomArrayNonRepeat = (elements) => {                          
   });
   return sortArrayNonRepeat;
 };
-
-export const humanizeMovieTime = (time) => {
-  let mins = time % 60;
-  let hours = (time - mins) / 60;
-  if (mins < 10) {mins = `0${  mins}`;}
-  if (hours < 10) {hours = `${  hours}`;}
-  return (`${hours  }h ${  mins}m`);
-};
-
-dayjs.extend(AdvancedFormat);
-export const getCommentDate = (commentDate) => dayjs(commentDate).fromNow();
-export const getYear = (date) => dayjs(date).format('YYYY');
-export const getReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
-
-export const compareTotalRating = (objA, objB) => objB.filmInfo.totalRating - objA.filmInfo.totalRating;
-
-
-export const compareComments = (objA, objB) => objB.comments.length - objA.comments.length;
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-  return newElement.firstChild;
-};
-
-export const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';

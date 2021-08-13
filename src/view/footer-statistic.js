@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import Abstract from './absrtact';
 
 const createFooterStatisticTemplate = (totalMovies) => (
   `<section class="footer__statistics">
@@ -6,25 +6,14 @@ const createFooterStatisticTemplate = (totalMovies) => (
   </section>`
 );
 
-export default class FooterStatistic {
+export default class FooterStatistic extends Abstract {
   constructor(totalMovies) {
-    this._element = null;
+    super();
     this._movies = totalMovies;
   }
 
   getTemplate () {
     return createFooterStatisticTemplate(this._movies);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

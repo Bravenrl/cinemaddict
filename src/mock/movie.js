@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {generateComments} from './comment.js';
-import {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement} from '../utils.js';
+import {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement} from '../utils/common.js';
 
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
