@@ -1,10 +1,9 @@
+import MovieCard from './movie.js';
 import ListView from '../view/list.js';
 import FilmsView from '../view/films.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
-import MovieCardView from '../view/movie-card.js';
-import PopupView from '../view/popup.js';
-import { compareTotalRating, compareComments, isEscEvent } from '../utils/movie.js';
-import { render, remove, showPopup, hidePopup } from '../utils/render.js';
+import { compareTotalRating, compareComments } from '../utils/movie.js';
+import { render, remove } from '../utils/render.js';
 import {
   RenderPosition,
   ExtraCardTitle,
@@ -24,14 +23,12 @@ export default class MovieList {
     this._listTopRatedComponent = new ListView(ExtraCardTitle.TOP_RATED,'',CssClass.SECTION);
     this._listMostCommentedComponent = new ListView(ExtraCardTitle.MOST_COMMENTED,'',CssClass.SECTION);
     this._lostComponentEmpty = new ListView(ListTitle.EMPTY);
-    this._listContainerElement = this._listComponent.getListContainer();
-    this._handlerShowMoreButtonClick = this._handlerShowMoreButton.bind(this);
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonEvt.bind(this);
   }
 
   init(movies) {
     this._movies = movies.slice();
-    this._moviesTopRaited = this._movies.slice().sort(compareTotalRating);
-    this._moviesMostCommented = this._movies.slice().sort(compareComments);
+
 
     render(this._movieBoardContainer, this._movieBoardComponent, RenderPosition.BEFOREEND);
     this._renderList();
@@ -39,40 +36,19 @@ export default class MovieList {
     this._renderListMostComment();
   }
 
-  _renderMovieCard (element, movie) {
-    const movieCardComponent = new MovieCardView(movie);
-    render(element, movieCardComponent, RenderPosition.BEFOREEND);
-
-    movieCardComponent.setClickHandler(() => {
-      const popupComponent = new PopupView(movie);
-
-      const onPopupEscKeydown = (evt) => {
-        if (isEscEvent(evt)) {
-          evt.preventDefault();
-          hidePopup(this._popupContainer, popupComponent);
-          document.removeEventListener('keydown', onPopupEscKeydown);
-        }
-      };
-
-      popupComponent.setClickHandler(() => {
-        hidePopup(this._popupContainer, popupComponent);
-        document.removeEventListener('keydown', onPopupEscKeydown);
-      });
-
-      showPopup(this._popupContainer, popupComponent);
-      document.addEventListener('keydown', onPopupEscKeydown);
-    });
-
+  _renderMovieCard (containerComponent, movie) {
+    const movieCardPresenter = new MovieCard (containerComponent, this._popupContainer);
+    movieCardPresenter.init(movie);
   }
 
-  _renderCards (container, movies, from, to) {
+  _renderCards (containerComponent, movies, from, to) {
     movies
       .slice(from, to)
-      .forEach((movie) => this._renderMovieCard(container, movie));
+      .forEach((movie) => this._renderMovieCard(containerComponent, movie));
   }
 
-  _handlerShowMoreButton () {
-    this._renderCards (this._listContainerElement, this._movies, this._renderedCounter, this._renderedCounter+CardCount.GENERAL_PER_STEP);
+  _handleShowMoreButtonEvt () {
+    this._renderCards (this._listComponent, this._movies, this._renderedCounter, this._renderedCounter+CardCount.GENERAL_PER_STEP);
     this._renderedCounter += CardCount.GENERAL_PER_STEP;
     if (this._renderedCounter >= this._movies.length) {
       remove(this._showMoreButtonComponent);
@@ -81,7 +57,7 @@ export default class MovieList {
 
   _renderShowMoreButton () {
     render(this._listComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
-    this._showMoreButtonComponent.setClickHandler(this._handlerShowMoreButtonClick);
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderListNoMovies () {
@@ -94,26 +70,26 @@ export default class MovieList {
       return;
     }
     render(this._movieBoardComponent, this._listComponent, RenderPosition.AFTERBEGIN);
-    this._renderCards(this._listContainerElement, this._movies, 0, Math.min(this._movies.length, CardCount.GENERAL_PER_STEP));
+    this._renderCards(this._listComponent, this._movies, 0, Math.min(this._movies.length, CardCount.GENERAL_PER_STEP));
     if (this._movies.length > CardCount.GENERAL_PER_STEP) {
       this._renderShowMoreButton();
     }
   }
 
   _renderListTopRaited () {
+    this._moviesTopRaited = this._movies.slice().sort(compareTotalRating);
     if (this._moviesTopRaited[0].filmInfo.totalRating !== 0) {
       render(this._movieBoardComponent, this._listTopRatedComponent, RenderPosition.BEFOREEND);
-      const extraContainerElement = this._listTopRatedComponent.getListContainer();
-      this._renderCards (extraContainerElement, this._moviesTopRaited, 0, Math.min(this._moviesTopRaited.length, CardCount.ADDITION));
+      this._renderCards (this._listTopRatedComponent, this._moviesTopRaited, 0, Math.min(this._moviesTopRaited.length, CardCount.ADDITION));
 
     }
   }
 
   _renderListMostComment () {
+    this._moviesMostCommented = this._movies.slice().sort(compareComments);
     if (this._moviesMostCommented[0].comments.length !== 0) {
       render(this._movieBoardComponent, this._listMostCommentedComponent, RenderPosition.BEFOREEND);
-      const extraContainerElement = this._listMostCommentedComponent.getListContainer();
-      this._renderCards (extraContainerElement, this._moviesMostCommented, 0, Math.min(this._moviesMostCommented.length, CardCount.ADDITION));
+      this._renderCards (this._listMostCommentedComponent, this._moviesMostCommented, 0, Math.min(this._moviesMostCommented.length, CardCount.ADDITION));
     }
   }
 

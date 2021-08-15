@@ -6,7 +6,7 @@ import { generateMovie } from './mock/movie.js';
 import { render } from './utils/render.js';
 import {
   RenderPosition,
-  CardCount,
+  CardCount
 } from './const.js';
 import MovieList from './presenter/movie-list.js';
 
