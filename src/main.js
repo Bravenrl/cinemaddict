@@ -16,8 +16,9 @@ const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
+const siteBodyElement = document.querySelector('body');
 
-const MoviePresenter = new MovieList(siteMainElement, siteFooterElement);
+const MoviePresenter = new MovieList(siteMainElement, siteBodyElement);
 
 render(siteHeaderElement, new HeaderProfileView(movies), RenderPosition.BEFOREEND);
 render(siteMainElement, new NavigationView(movies), RenderPosition.BEFOREEND);

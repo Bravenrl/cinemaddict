@@ -29,6 +29,22 @@ export const remove = (component) => {
   component.removeElement();
 };
 
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+  parent.replaceChild(newChild, oldChild);
+};
 
 export const createElement = (template) => {
   const newElement = document.createElement('div');
@@ -39,12 +55,6 @@ export const createElement = (template) => {
 export const showPopup = (parent, child) => {
   if (child instanceof Abstract) {
     child = child.getElement();
-  }
-  const popup = parent.querySelector('.film-details');
-  if (parent.contains(popup)) {
-    popup.remove();
-    parent.appendChild(child);
-    return;
   }
   document.body.classList.add('hide-overflow');
   parent.appendChild(child);
