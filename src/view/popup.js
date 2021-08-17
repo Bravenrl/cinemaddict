@@ -153,17 +153,50 @@ export default class Popup extends Abstract {
   constructor(movie) {
     super();
     this._movie = movie;
-    this._clickHandler = this._clickHandler.bind(this);
+    this._clickCloseButtonHandler = this._clickCloseButtonHandler.bind(this);
+    this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
+    this._clickAlreadyWatchedHandler = this._clickAlreadyWatchedHandler.bind(this);
+    this._clickAddToFavoritesHandler = this._clickAddToFavoritesHandler.bind(this);
   }
 
-  _clickHandler(evt) {
+  _clickCloseButtonHandler(evt) {
     evt.preventDefault();
-    this._callback.onPopupClick();
+    this._callback.onCloseButtonClick();
   }
 
-  setClickHandler(callback) {
-    this._callback.onPopupClick = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+  _clickAddToWatchlistHandler(evt) {
+    evt.preventDefault();
+    this._callback.onAddToWatchlistClick();
+  }
+
+  _clickAlreadyWatchedHandler(evt) {
+    evt.preventDefault();
+    this._callback.onAlreadyWatchedClick();
+  }
+
+  _clickAddToFavoritesHandler(evt) {
+    evt.preventDefault();
+    this._callback.onAddToFavoritesClick();
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.onCloseButtonClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickCloseButtonHandler);
+  }
+
+  setAddToWatchlistClickHandler(callback) {
+    this._callback.onAddToWatchlistClick = callback;
+    this.getElement().querySelector('#watchlist').addEventListener('click', this._clickAddToWatchlistHandler);
+  }
+
+  setAlreadyWatchedHandler(callback) {
+    this._callback.onAlreadyWatchedClick = callback;
+    this.getElement().querySelector('#watched').addEventListener('click', this._clickAlreadyWatchedHandler);
+  }
+
+  setAddToFavoritesHandler(callback) {
+    this._callback.onAddToFavoritesClick = callback;
+    this.getElement().querySelector('#favorite').addEventListener('click', this._clickAddToFavoritesHandler);
   }
 
   getTemplate () {
