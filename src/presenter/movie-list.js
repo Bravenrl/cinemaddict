@@ -2,14 +2,16 @@ import MovieCard from './movie.js';
 import ListView from '../view/list.js';
 import FilmsView from '../view/films.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
-import { compareTotalRating, compareComments } from '../utils/movie.js';
+import SortView from '../view/sort.js';
+import { compareTotalRating, compareComments, compareDate } from '../utils/movie.js';
 import { render, remove } from '../utils/render.js';
 import {
   RenderPosition,
   ExtraCardTitle,
   CardCount,
   ListTitle,
-  CssClass
+  CssClass,
+  SortType
 } from '../const.js';
 import { updateItem } from '../utils/common.js';
 
@@ -22,8 +24,10 @@ export default class MovieList {
     this._movieBoardContainer = listContainer;
     this._popupContainer = popupContainer;
     this._renderedCounter = CardCount.GENERAL_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
 
     this._movieBoardComponent = new FilmsView();
+    this._sortComponent = new SortView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._listComponent = new ListView(ListTitle.ALL_MOVIES, CssClass.HEADING);
     this._listTopRatedComponent = new ListView(ExtraCardTitle.TOP_RATED,'',CssClass.SECTION);
@@ -33,11 +37,14 @@ export default class MovieList {
     this._handleUpdateCard = this._handleUpdateCard.bind(this);
     this._handleChangeMode = this._handleChangeMode.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortMovies = this._handleSortMovies.bind(this);
   }
 
   init(movies) {
     this._movies = movies.slice();
+    this._sourcedMovies = movies.slice();
 
+    this._renderSort();
     render(this._movieBoardContainer, this._movieBoardComponent, RenderPosition.BEFOREEND);
     this._renderList();
     this._renderListTopRaited();
@@ -46,6 +53,7 @@ export default class MovieList {
 
   _handleUpdateCard (updatedMovie) {
     this._movies = updateItem(this._movies, updatedMovie);
+    this._sourcedMovies = updateItem(this._sourcedMovies, updatedMovie);
     if (this._movieCardPresenter.has(updatedMovie.id)) {
       this._movieCardPresenter.get(updatedMovie.id).init(updatedMovie);
     }
@@ -61,7 +69,7 @@ export default class MovieList {
     this._movieCardPresenter.forEach((presenter) => presenter.resetPopup());
     this._movieTopCardPresenter.forEach((presenter) => presenter.resetPopup());
     this._movieCommentCardPresenter.forEach((presenter) => presenter.resetPopup());
-
+    document.body.classList.add('hide-overflow');
   }
 
   _handleShowMoreButtonClick () {
@@ -70,6 +78,36 @@ export default class MovieList {
     if (this._renderedCounter >= this._movies.length) {
       remove(this._showMoreButtonComponent);
     }
+  }
+
+  _handleSortMovies(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    this._sortMovies(sortType);
+    this._clearList();
+    this._renderList();
+  }
+
+  _sortMovies(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._movies.sort(compareDate);
+        break;
+      case SortType.RATING:
+        this._movies.sort(compareTotalRating);
+        break;
+      default:
+        this._movies = this._sourcedMovies.slice();
+        break;
+    }
+    this._currentSortType = sortType;
+  }
+
+  _renderSort() {
+    render(this._movieBoardContainer, this._sortComponent, RenderPosition.BEFOREEND);
+    this._sortComponent.setSortChangeHandler(this._handleSortMovies);
+
   }
 
   _renderMovieCard (container, movie) {
@@ -111,7 +149,8 @@ export default class MovieList {
     this._movieCardPresenter.forEach((presenter) => presenter.destroy());
     this._movieCardPresenter.clear();
     this._renderedCounter = CardCount.GENERAL_PER_STEP;
-    remove(this._loadMoreButtonComponent);
+    remove(this._showMoreButtonComponent);
+    document.body.classList.remove('hide-overflow');
   }
 
   _renderList () {

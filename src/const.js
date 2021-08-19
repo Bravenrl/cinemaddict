@@ -44,3 +44,13 @@ export const CssClass = {
   HEADING: 'visually-hidden',
 };
 
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  SHOW: 'SHOW',
+};
+
+export const SortType = {
+  DEFAULT: 'default',
+  RATING: 'rank',
+  DATE: 'date',
+};

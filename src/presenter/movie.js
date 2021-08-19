@@ -2,12 +2,7 @@ import MovieCardView from '../view/movie-card.js';
 import PopupView from '../view/popup.js';
 import { isEscEvent } from '../utils/movie.js';
 import { render, showPopup, hidePopup, replace, remove } from '../utils/render.js';
-import { RenderPosition } from '../const.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  SHOW: 'SHOW',
-};
+import { RenderPosition, Mode } from '../const.js';
 
 export default class Movie {
   constructor (listComponent, popupContainer, updateMovie, changeMode) {
