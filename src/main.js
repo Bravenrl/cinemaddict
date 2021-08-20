@@ -1,4 +1,3 @@
-import SortView from './view/sort.js';
 import FooterStatisticView from './view/footer-statistic.js';
 import HeaderProfileView from './view/header-profile.js';
 import NavigationView from './view/main-navigation.js';
@@ -22,7 +21,6 @@ const MoviePresenter = new MovieList(siteMainElement, siteBodyElement);
 
 render(siteHeaderElement, new HeaderProfileView(movies), RenderPosition.BEFOREEND);
 render(siteMainElement, new NavigationView(movies), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortView(), RenderPosition.BEFOREEND);
 
 MoviePresenter.init(movies);
 

@@ -39,11 +39,12 @@ export const replace = (newChild, oldChild) => {
   }
 
   const parent = oldChild.parentElement;
-
+  const currentScrollTop = oldChild.scrollTop;
   if (parent === null || oldChild === null || newChild === null) {
     throw new Error('Can\'t replace unexisting elements');
   }
   parent.replaceChild(newChild, oldChild);
+  newChild.scrollTop = currentScrollTop;
 };
 
 export const createElement = (template) => {

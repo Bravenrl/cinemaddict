@@ -17,6 +17,7 @@ export const getReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
 export const compareTotalRating = (objA, objB) => objB.filmInfo.totalRating - objA.filmInfo.totalRating;
 
+export const compareDate = (objA, objB) => dayjs(objB.filmInfo.release.date).diff(dayjs(objA.filmInfo.release.date));
 
 export const compareComments = (objA, objB) => objB.comments.length - objA.comments.length;
 
