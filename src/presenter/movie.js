@@ -64,6 +64,7 @@ export default class Movie {
 
   resetPopup() {
     if (this._mode !== Mode.DEFAULT) {
+      this._popupComponent.reset(this._movie);
       this._hidePopup();
     }
   }
@@ -88,6 +89,7 @@ export default class Movie {
   }
 
   _handlePopupCloseButtonClick() {
+    this._popupComponent.reset(this._movie);
     this._hidePopup();
   }
 
@@ -112,6 +114,7 @@ export default class Movie {
   _escKeydownHendler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
+      this._popupComponent.reset(this._movie);
       this._hidePopup();
     }
   }
