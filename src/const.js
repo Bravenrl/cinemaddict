@@ -54,3 +54,10 @@ export const SortType = {
   RATING: 'rank',
   DATE: 'date',
 };
+
+export const NewComment = {
+  isEmoji: false,
+  emoji: '',
+  comment: '',
+};
+

@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 import { humanizeMovieTime } from '../utils/movie.js';
-import { Emoji } from '../const.js';
+import { Emoji, NewComment} from '../const.js';
 import { getCommentDate } from '../utils/movie.js';
 import { getReleaseDate } from '../utils/movie.js';
 
@@ -241,9 +241,7 @@ export default class Popup extends SmartView {
   static parseMovieToData(movie) {
     const data = JSON.parse(JSON.stringify(movie));
     data.isComments = movie.comments.length !== 0;
-    data.newComment = {
-      comment: '',
-    };
+    data.newComment = NewComment;
     return data;
   }
 
