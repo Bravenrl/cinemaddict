@@ -205,7 +205,7 @@ export default class Popup extends SmartView {
     this.setCloseButtonClickHandler(this._callback.onCloseButtonClick);
     this.setAddToWatchlistClickHandler(this._callback.onAddToWatchlistClick);
     this.setAlreadyWatchedHandler(this._callback.onAlreadyWatchedClick);
-    this.setAddToFavoritesHandler(this._callback.onAlreadyWatchedClick);
+    this.setAddToFavoritesHandler(this._callback.onAddToFavoritesClick);
   }
 
   _setInnerHandlers() {
@@ -259,5 +259,19 @@ export default class Popup extends SmartView {
 
   getTemplate () {
     return createPopupTemplate(this._data);
+  }
+
+  getData() {
+    return this._data;
+  }
+
+  restore(prevData) {
+    this.updateData({
+      newComment: Object.assign(
+        {},
+        this._data.newComment,
+        prevData.newComment,
+      ),
+    });
   }
 }

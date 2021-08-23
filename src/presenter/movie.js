@@ -31,6 +31,7 @@ export default class Movie {
     const prevMovieCardComponent = this._movieCardComponent;
     const prevPopupComponent = this._popupComponent;
 
+
     this._movieCardComponent = new MovieCardView(this._movie);
     this._popupComponent = new PopupView(this._movie);
 
@@ -52,7 +53,11 @@ export default class Movie {
     }
     if (this._mode === Mode.SHOW) {
       replace(this._popupComponent, prevPopupComponent);
+      if (prevPopupComponent) {
+        const data = prevPopupComponent.getData();
+        this._popupComponent.restore(data);}
     }
+
     remove(prevMovieCardComponent);
     remove(prevPopupComponent);
   }
