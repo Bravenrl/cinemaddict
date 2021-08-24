@@ -1,16 +1,11 @@
 import dayjs from 'dayjs';
-import AdvancedFormat from 'dayjs/plugin/relativeTime';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import duration from 'dayjs/plugin/duration';
 
 
-export const humanizeMovieTime = (time) => {
-  let mins = time % 60;
-  let hours = (time - mins) / 60;
-  if (mins < 10) {mins = `0${  mins}`;}
-  if (hours < 10) {hours = `${  hours}`;}
-  return (`${hours  }h ${  mins}m`);
-};
-
-dayjs.extend(AdvancedFormat);
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+export const humanizeMovieTime = (time) => dayjs.duration(time, 'minutes').format('H[h] mm[m]');
 export const getCommentDate = (commentDate) => dayjs(commentDate).fromNow();
 export const getYear = (date) => dayjs(date).format('YYYY');
 export const getReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
