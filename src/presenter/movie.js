@@ -2,7 +2,7 @@ import MovieCardView from '../view/movie-card.js';
 import PopupView from '../view/popup.js';
 import { isEscEvent } from '../utils/movie.js';
 import { render, showPopup, hidePopup, replace, remove } from '../utils/render.js';
-import { RenderPosition, Mode } from '../const.js';
+import { RenderPosition, Mode, UpdateType, UserAction } from '../const.js';
 
 export default class Movie {
   constructor (listComponent, popupContainer, updateMovie, changeMode) {
@@ -101,20 +101,29 @@ export default class Movie {
   _handleAddToWatchlistClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.watchlist = !this._movie.userDetails.watchlist;
-    this._updateMovie(updatedMovie);
+    this._updateMovie(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
   }
 
   _handleAddToFavoritesClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.favorite = !this._movie.userDetails.favorite;
-    this._updateMovie(updatedMovie);
+    this._updateMovie(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
   }
 
   _handleAlreadyWatchedClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
-    this._updateMovie(updatedMovie);
+    this._updateMovie(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
   }
+
+  _handleSaveData() {
+
+  }
+
+  _hadleDeleteCommentClick() {
+
+  }
+
 
   _escKeydownHendler(evt) {
     if (isEscEvent(evt)) {

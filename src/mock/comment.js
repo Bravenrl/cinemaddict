@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
 import {getRandomInteger, getRandomArrayElement} from '../utils/common.js';
 
-const EMOTOINS = ['smile', 'sleeping', 'puke', 'angry'];
 
+const EMOTOINS = ['smile', 'sleeping', 'puke', 'angry'];
+const TOTAL_COMMENTS = 5;
 const generateDate = () => dayjs().add(getRandomInteger(-100, 0), 'day').format();
 
 
-export const generateComments = () =>
+const generateNewComment = () =>
   ({
     id: 1,
     author: `Author# ${getRandomInteger(0, 100)}`,
@@ -15,4 +16,11 @@ export const generateComments = () =>
     emotion: getRandomArrayElement(EMOTOINS),
   });
 
+let idCounter = 1;
+export const generateComments = () => {
+  const commentsCount = getRandomInteger(0,TOTAL_COMMENTS);
+  const comments = new Array(commentsCount).fill().map(generateNewComment);
+  comments.forEach((comment) => comment.id=`${idCounter++}`);
+  return comments;
+};
 

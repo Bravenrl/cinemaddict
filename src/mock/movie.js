@@ -1,6 +1,13 @@
 import dayjs from 'dayjs';
-import {generateComments} from './comment.js';
-import {getRandomInteger, getRandomNumberFloat, getRandomArrayNonRepeat, getRandomArrayElement} from '../utils/common.js';
+import {
+  generateComments
+} from './comment.js';
+import {
+  getRandomInteger,
+  getRandomNumberFloat,
+  getRandomArrayNonRepeat,
+  getRandomArrayElement
+} from '../utils/common.js';
 
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -52,34 +59,24 @@ const TITLES = [
   'the man with the golden arm',
 ];
 
-const TOTAL_COMMENTS = 5;
-
-const generateComment = () => {
-  const commentsCount = getRandomInteger(0,TOTAL_COMMENTS);
-  const comments = new Array(commentsCount).fill().map(generateComments);
-  let idCounter = 1;
-  comments.forEach((comment) => comment.id=`${idCounter++}`);
-  return comments;
-};
-
 const generateDate = () => dayjs().add(getRandomInteger(-360, 0), 'day').format();
 
-let movieCount = 1;
+let movieCount = 0;
 
 export const generateMovie = () => {
   const alreadyWatched = Boolean(getRandomInteger(0, 1));
-  const watchingDate = (alreadyWatched)? generateDate() : '';
+  const watchingDate = (alreadyWatched) ? generateDate() : '';
 
 
   return {
     id: `${movieCount++}`,
-    comments: generateComment(),
+    comments: [],
     filmInfo: {
       title: getRandomArrayElement(TITLES),
       alternativeTitle: getRandomArrayElement(TITLES),
       totalRating: getRandomNumberFloat(),
       poster: getRandomArrayElement(POSTERS),
-      ageRating: getRandomInteger(0,18),
+      ageRating: getRandomInteger(0, 18),
       director: `director#${getRandomInteger(0, 100)}`,
       writers: getRandomArrayNonRepeat(WRITERS),
       actors: getRandomArrayNonRepeat(ACTORS),
@@ -87,7 +84,7 @@ export const generateMovie = () => {
         date: dayjs().add(getRandomInteger(-50, 0), 'year').format(),
         releaseCountry: getRandomArrayElement(COUNTRIES),
       },
-      runtime: getRandomInteger(60,240),
+      runtime: getRandomInteger(60, 240),
       genre: getRandomArrayNonRepeat(GANRES),
       description: getRandomArrayNonRepeat(DESCRIPTIONS),
     },
@@ -100,5 +97,4 @@ export const generateMovie = () => {
     },
   };
 };
-
 
