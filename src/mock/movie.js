@@ -1,8 +1,5 @@
 import dayjs from 'dayjs';
 import {
-  generateComments
-} from './comment.js';
-import {
   getRandomInteger,
   getRandomNumberFloat,
   getRandomArrayNonRepeat,

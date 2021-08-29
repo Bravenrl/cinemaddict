@@ -1,28 +1,52 @@
 import Abstract from './absrtact';
 
-const getHistoryCount = (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched).length;
-const getWatchlistCount = (movies) => movies.filter((movie) => movie.userDetails.watchlist).length;
-const getFavoritesCount = (movies) => movies.filter((movie) => movie.userDetails.favorite).length;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
+  return (`<a href="#${type}" class="main-navigation__item
+            ${currentFilterType === type ? 'main-navigation__item--active' : ''}" data-filter-type = "${type}">
+            ${name}
+            ${count !== 0 ? `<span class="main-navigation__item-count">${count}</span>` : ''}</a>`);
+};
 
-const createNavigationTemplate = (movies) => (
-  `<nav class="main-navigation">
+
+const createNavigationTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
+    .join('');
+  return (`<nav class="main-navigation">
       <div class="main-navigation__items">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-      <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${getWatchlistCount(movies)}</span></a>
-      <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${getHistoryCount(movies)}</span></a>
-      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${getFavoritesCount(movies)}</span></a>
-    </div>
+      ${filterItemsTemplate}
+      </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`
-);
+  );
+};
 
 export default class Navigation extends Abstract {
-  constructor(movies) {
+  constructor(filters, currentFilterType) {
     super();
-    this._movies = movies;
+    this._filters = filters;
+    this._currentFilter = currentFilterType;
+
+    this._filterTypeClickHandler = this._filterTypeClickHandler.bind(this);
   }
 
   getTemplate () {
-    return createNavigationTemplate(this._movies);
+    return createNavigationTemplate(this._filters, this._currentFilter);
+  }
+
+  _filterTypeClickHandler(evt) {
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.dataset.filterType);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement()
+      .querySelector('.main-navigation__items')
+      .addEventListener('click', this._filterTypeClickHandler);
   }
 }

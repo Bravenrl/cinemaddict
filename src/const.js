@@ -20,6 +20,7 @@ export const ProfileRank = {
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
+  BEFOREBEGIN: 'beforebegin',
 };
 
 export const CardCount = {
@@ -55,6 +56,12 @@ export const SortType = {
   DATE: 'date',
 };
 
+export const SortText = {
+  DEFAULT: 'Sort by default',
+  RATING: 'Sort by rating',
+  DATE: 'Sort by date',
+};
+
 export const NewComment = {
   isEmoji: false,
   emoji: '',
@@ -72,4 +79,12 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
+
+export const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITE: 'favorites',
+};
+
 

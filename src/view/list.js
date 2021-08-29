@@ -3,8 +3,7 @@ import Abstract from './absrtact';
 const createListTemplate = (title, headingClass, sectionClass) => (
   `<section class="films-list ${sectionClass}">
         <h2 class="films-list__title ${headingClass}">${title}</h2>
-        <div class="films-list__container">
-        </div>
+        ${((headingClass === '')&(sectionClass ==='')) ?  '' : '<div class="films-list__container"></div>'}
     </section>`
 );
 export default class List extends Abstract{
