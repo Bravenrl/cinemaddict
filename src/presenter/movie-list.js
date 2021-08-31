@@ -23,10 +23,11 @@ import {
   UserAction
 } from '../const.js';
 import { filter } from '../utils/filter.js';
+import { allComments } from '../mock/comment.js';
 
 
 export default class MovieList {
-  constructor(listContainer, popupContainer, moviesModel, commentsModel, filterModel) {
+  constructor(listContainer, popupContainer, moviesModel, filterModel, commentsModel) {
     this._movieCardPresenter = new Map();
     this._movieTopCardPresenter = new Map();
     this._movieCommentCardPresenter = new Map();
@@ -54,6 +55,7 @@ export default class MovieList {
     this._handleSortMovies = this._handleSortMovies.bind(this);
     this._moviesModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
   }
 
   _getMovies() {
@@ -71,8 +73,8 @@ export default class MovieList {
     return filtredMovies;
   }
 
-  _getComments() {
-    return this._commentsModel.comments;
+  _getComments(movie) {
+    return this._commentsModel.comments = allComments[movie.id];
   }
 
   init() {
@@ -82,11 +84,16 @@ export default class MovieList {
     this._renderListMostComment();
   }
 
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, updateMovie, updateComment) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._moviesModel.updateMovie(updateType, update);
+        this._moviesModel.updateMovie(updateType, updateMovie);
         break;
+      case UserAction.DELETE_COMMENT:
+        this._commentsModel.deleteComment(updateType, updateMovie, updateComment);
+        break;
+      case UserAction.ADD_COMMENT:
+        this._commentsModel.addComment(updateType, updateMovie, updateComment);
     }
   }
 
@@ -101,6 +108,8 @@ export default class MovieList {
         }
         if (this._movieCommentCardPresenter.has(data.id)) {
           this._movieCommentCardPresenter.get(data.id).init(data);
+          remove(this._listMostCommentedComponent);
+          this._renderListMostComment();
         }
         break;
       case UpdateType.MINOR:
@@ -113,6 +122,7 @@ export default class MovieList {
         break;
     }
   }
+
 
   _handleChangeMode() {
     this._movieCardPresenter.forEach((presenter) => presenter.resetPopup());
@@ -153,17 +163,17 @@ export default class MovieList {
 
   _renderMovieCard(container, movie) {
     if (container === this._listComponent) {
-      const movieCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode);
+      const movieCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel);
       movieCardPresenter.init(movie);
       this._movieCardPresenter.set(movie.id, movieCardPresenter);
     }
     if (container === this._listMostCommentedComponent) {
-      const movieCommentCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode);
+      const movieCommentCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel);
       movieCommentCardPresenter.init(movie);
       this._movieCommentCardPresenter.set(movie.id, movieCommentCardPresenter);
     }
     if (container === this._listTopRatedComponent) {
-      const movieTopCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode);
+      const movieTopCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel);
       movieTopCardPresenter.init(movie);
       this._movieTopCardPresenter.set(movie.id, movieTopCardPresenter);
     }

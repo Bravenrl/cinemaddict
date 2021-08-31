@@ -1,8 +1,17 @@
 import SmartView from './smart.js';
-import { humanizeMovieTime } from '../utils/movie.js';
-import { Emoji, NewComment} from '../const.js';
-import { getCommentDate } from '../utils/movie.js';
-import { getReleaseDate } from '../utils/movie.js';
+import {
+  humanizeMovieTime
+} from '../utils/movie.js';
+import {
+  Emoji,
+  NewComment
+} from '../const.js';
+import {
+  getCommentDate
+} from '../utils/movie.js';
+import {
+  getReleaseDate
+} from '../utils/movie.js';
 
 
 const isActive = (isDetails) => (isDetails) ? ('film-details__control-button--active') : '';
@@ -39,7 +48,7 @@ const createCommentsTemplate = (comments, isComments) => (isComments) ? (`
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
                 <span class="film-details__comment-day">${getCommentDate(comment.date)}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button id = "${comment.id}"class="film-details__comment-delete">Delete</button>
               </p>
             </div>
       </li>
@@ -49,8 +58,16 @@ const createCommentsTemplate = (comments, isComments) => (isComments) ? (`
 
 const createNewComentEmojiTemplate = (isEmoji, commentEmoji) => (isEmoji) ? (`<img src="images/emoji/${commentEmoji}.png" width="55" height="55" alt="emoji-${commentEmoji}">`) : '';
 
-const createPopupTemplate = (data) => {
-  const {comments, filmInfo,  userDetails, isComments, newComment=''} = data;
+const createPopupTemplate = (data, movie) => {
+  const {
+    userDetails,
+    comments,
+    isComments,
+    newComment = '',
+  } = data;
+  const {
+    filmInfo,
+  } = movie;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -141,15 +158,18 @@ const createPopupTemplate = (data) => {
 };
 
 export default class Popup extends SmartView {
-  constructor(movie) {
+  constructor(movie, comments) {
     super();
-    this._data = Popup.parseMovieToData(movie);
+    this._movie = movie;
+    this._comments = comments;
+    this._data = Popup.parseMovieToData(movie, comments);
     this._clickCloseButtonHandler = this._clickCloseButtonHandler.bind(this);
     this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
     this._clickAlreadyWatchedHandler = this._clickAlreadyWatchedHandler.bind(this);
     this._clickAddToFavoritesHandler = this._clickAddToFavoritesHandler.bind(this);
     this._emojiToggleHandler = this._emojiToggleHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._clickCommentDeleteHandler = this._clickCommentDeleteHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -160,17 +180,22 @@ export default class Popup extends SmartView {
 
   _clickAddToWatchlistHandler(evt) {
     evt.preventDefault();
-    this._callback.onAddToWatchlistClick();
+    this._callback.onAddToWatchlistClick(evt.target.name);
   }
 
   _clickAlreadyWatchedHandler(evt) {
     evt.preventDefault();
-    this._callback.onAlreadyWatchedClick();
+    this._callback.onAlreadyWatchedClick(evt.target.name);
   }
 
   _clickAddToFavoritesHandler(evt) {
     evt.preventDefault();
-    this._callback.onAddToFavoritesClick();
+    this._callback.onAddToFavoritesClick(evt.target.name);
+  }
+
+  _clickCommentDeleteHandler(evt) {
+    evt.preventDefault();
+    this._callback.onDeleteButtonClick(evt.target.id);
   }
 
   _emojiToggleHandler(evt) {
@@ -179,11 +204,10 @@ export default class Popup extends SmartView {
     }
     evt.preventDefault();
     this.updateData({
-      newComment: Object.assign(
-        {},
-        this._data.newComment,
-        {isEmoji: this._data.newComment.emoji !== evt.target.value,
-          emoji: this._data.newComment.emoji === evt.target.value  ? '' : evt.target.value,
+      newComment: Object.assign({},
+        this._data.newComment, {
+          isEmoji: this._data.newComment.emoji !== evt.target.value,
+          emoji: this._data.newComment.emoji === evt.target.value ? '' : evt.target.value,
         },
       ),
     });
@@ -193,11 +217,12 @@ export default class Popup extends SmartView {
   _commentInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      newComment: Object.assign(
-        {},
-        this._data.newComment,
-        {comment: evt.target.value},
-      )}, true);
+      newComment: Object.assign({},
+        this._data.newComment, {
+          comment: evt.target.value,
+        },
+      ),
+    }, true);
   }
 
   restoreHandlers() {
@@ -206,6 +231,7 @@ export default class Popup extends SmartView {
     this.setAddToWatchlistClickHandler(this._callback.onAddToWatchlistClick);
     this.setAlreadyWatchedHandler(this._callback.onAlreadyWatchedClick);
     this.setAddToFavoritesHandler(this._callback.onAddToFavoritesClick);
+    this.setCommentDeleteClickHandler(this._callback.onDeleteButtonClick);
   }
 
   _setInnerHandlers() {
@@ -216,6 +242,13 @@ export default class Popup extends SmartView {
     this.getElement()
       .querySelector('.film-details__comment-input')
       .addEventListener('change', this._commentInputHandler);
+  }
+
+  setCommentDeleteClickHandler(callback) {
+    this._callback.onDeleteButtonClick = callback;
+    this.getElement()
+      .querySelectorAll('.film-details__comment-delete')
+      .forEach((button)=>button.addEventListener('click', this._clickCommentDeleteHandler));
   }
 
   setCloseButtonClickHandler(callback) {
@@ -238,10 +271,14 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('#favorite').addEventListener('click', this._clickAddToFavoritesHandler);
   }
 
-  static parseMovieToData(movie) {
-    const data = JSON.parse(JSON.stringify(movie));
-    data.isComments = movie.comments.length !== 0;
-    data.newComment = NewComment;
+  static parseMovieToData(movie, comments) {
+    const data = Object.assign({}, {
+      comments: comments,
+      userDetails: movie.userDetails,
+      isComments: (comments.length !== 0),
+      newComment: NewComment,
+    });
+
     return data;
   }
 
@@ -253,12 +290,12 @@ export default class Popup extends SmartView {
     return data;
   }
 
-  reset(movie) {
-    this.updateData(Popup.parseMovieToData(movie));
+  reset(movie, comments) {
+    this.updateData(Popup.parseMovieToData(movie, comments));
   }
 
-  getTemplate () {
-    return createPopupTemplate(this._data);
+  getTemplate() {
+    return createPopupTemplate(this._data, this._movie);
   }
 
   getData() {
@@ -267,8 +304,7 @@ export default class Popup extends SmartView {
 
   restore(prevData) {
     this.updateData({
-      newComment: Object.assign(
-        {},
+      newComment: Object.assign({},
         this._data.newComment,
         prevData.newComment,
       ),

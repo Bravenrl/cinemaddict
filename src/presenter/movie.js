@@ -1,17 +1,34 @@
 import MovieCardView from '../view/movie-card.js';
 import PopupView from '../view/popup.js';
-import { isEscEvent } from '../utils/movie.js';
-import { render, showPopup, hidePopup, replace, remove } from '../utils/render.js';
-import { RenderPosition, Mode, UpdateType, UserAction } from '../const.js';
+import {
+  isEscEvent
+} from '../utils/movie.js';
+import {
+  render,
+  showPopup,
+  hidePopup,
+  replace,
+  remove
+} from '../utils/render.js';
+import {
+  RenderPosition,
+  Mode,
+  UpdateType,
+  UserAction
+} from '../const.js';
+import {
+  allComments
+} from '../mock/comment.js';
+
 
 export default class Movie {
-  constructor (listComponent, popupContainer, updateMovie, changeMode) {
+  constructor(listComponent, popupContainer, changeData, changeMode, commentsModel) {
     this._popupContainer = popupContainer;
     this._listComponent = listComponent;
     this._changeMode = changeMode;
-    this._updateMovie = updateMovie;
+    this._changeData = changeData;
     this._mode = Mode.DEFAULT;
-
+    this._commentsModel = commentsModel;
     this._movieCardComponent = null;
     this._popupComponent = null;
 
@@ -23,26 +40,20 @@ export default class Movie {
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleAddToFavoritesClick = this._handleAddToFavoritesClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
+    this._hadleDeleteCommentClick = this._hadleDeleteCommentClick.bind(this);
   }
 
   init(movie) {
     this._movie = movie;
 
     const prevMovieCardComponent = this._movieCardComponent;
-    const prevPopupComponent = this._popupComponent;
-
 
     this._movieCardComponent = new MovieCardView(this._movie);
-    this._popupComponent = new PopupView(this._movie);
 
     this._movieCardComponent.setOpenPupupClickHandler(this._handleMovieCardClick);
     this._movieCardComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._movieCardComponent.setAddToFavoritesHandler(this._handleAddToFavoritesClick);
     this._movieCardComponent.setAlreadyWatchedHandler(this._handleAlreadyWatchedClick);
-    this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
-    this._popupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
-    this._popupComponent.setAddToFavoritesHandler(this._handleAddToFavoritesClick);
-    this._popupComponent.setAlreadyWatchedHandler(this._handleAlreadyWatchedClick);
 
     if (prevMovieCardComponent === null) {
       render(this._listContainerElement, this._movieCardComponent, RenderPosition.BEFOREEND);
@@ -52,24 +63,49 @@ export default class Movie {
       replace(this._movieCardComponent, prevMovieCardComponent);
     }
     if (this._mode === Mode.SHOW) {
-      replace(this._popupComponent, prevPopupComponent);
-      if (prevPopupComponent) {
-        const data = prevPopupComponent.getData();
-        this._popupComponent.restore(data);}
+      this._initPopup();
     }
 
     remove(prevMovieCardComponent);
-    remove(prevPopupComponent);
+  }
+
+  _getComments() {
+    if (this._mode !== Mode.SHOW) {
+      this._commentsModel.comments = allComments[this._movie.id];
+    }
+    this._movieComments = this._commentsModel.comments;
+  }
+
+  _initPopup() {
+    this._getComments();
+    const prevPopupComponent = this._popupComponent;
+    this._popupComponent = new PopupView(this._movie, this._movieComments);
+    this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+    this._popupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
+    this._popupComponent.setAddToFavoritesHandler(this._handleAddToFavoritesClick);
+    this._popupComponent.setAlreadyWatchedHandler(this._handleAlreadyWatchedClick);
+    this._popupComponent.setCommentDeleteClickHandler(this._hadleDeleteCommentClick);
+    if (this._mode === Mode.SHOW) {
+      replace(this._popupComponent, prevPopupComponent);
+      if (prevPopupComponent) {
+        const data = prevPopupComponent.getData();
+        this._popupComponent.restore(data);
+      }
+    }
+    if (prevPopupComponent !== null) {
+      remove(prevPopupComponent);
+    }
   }
 
   destroy() {
-    remove (this._movieCardComponent);
-    remove (this._popupComponent);
+    remove(this._movieCardComponent);
+    remove(this._popupComponent);
   }
 
   resetPopup() {
     if (this._mode !== Mode.DEFAULT) {
-      this._popupComponent.reset(this._movie);
+      const movieComments = this._commentsModel.comments;
+      this._popupComponent.reset(this._movie, movieComments);
       this._hidePopup();
     }
   }
@@ -81,6 +117,7 @@ export default class Movie {
   }
 
   _showPopup() {
+    this._initPopup();
     showPopup(this._popupContainer, this._popupComponent);
     document.addEventListener('keydown', this._escKeydownHendler);
     this._changeMode();
@@ -94,44 +131,64 @@ export default class Movie {
   }
 
   _handlePopupCloseButtonClick() {
-    this._popupComponent.reset(this._movie);
+    this._popupComponent.reset(this._movie, this._movieComments);
     this._hidePopup();
+    this._popupComponent = null;
   }
 
-  _handleAddToWatchlistClick() {
+  _handleAddToWatchlistClick(evt) {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.watchlist = !this._movie.userDetails.watchlist;
-    this._updateMovie(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+    if (evt !== '') {
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+    } else {
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
+    }
   }
 
-  _handleAddToFavoritesClick() {
+  _handleAddToFavoritesClick(evt) {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.favorite = !this._movie.userDetails.favorite;
-    this._updateMovie(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+    if (evt !== '') {
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+    } else {
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
+    }
   }
 
-  _handleAlreadyWatchedClick() {
+  _handleAlreadyWatchedClick(evt) {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
-    this._updateMovie(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+    if (evt !== '') {
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+    } else {
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
+    }
   }
 
   _handleSaveData() {
 
   }
 
-  _hadleDeleteCommentClick() {
-
+  _hadleDeleteCommentClick(updateId) {
+    const updatedComment = (this._movieComments).find((comment) => comment.id === `${updateId}`);
+    const updatedMovie = this._movie.comments.filter((comment) => comment !== updateId);
+    this._movie.comments = updatedMovie;
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this._movie,
+      updatedComment,
+    );
   }
 
 
   _escKeydownHendler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
-      this._popupComponent.reset(this._movie);
+      this._popupComponent.reset(this._movie, this._movieComments);
       this._hidePopup();
+      this._popupComponent = null;
     }
   }
 }
-
-

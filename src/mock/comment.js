@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import {getRandomInteger, getRandomArrayElement} from '../utils/common.js';
+import { CardCount } from '../const.js';
 
 
 const EMOTOINS = ['smile', 'sleeping', 'puke', 'angry'];
@@ -24,3 +25,4 @@ export const generateComments = () => {
   return comments;
 };
 
+export const allComments = new Array(CardCount.GENERAL).fill().map(generateComments);
