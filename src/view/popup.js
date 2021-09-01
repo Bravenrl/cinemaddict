@@ -1,6 +1,7 @@
 import SmartView from './smart.js';
 import {
   humanizeMovieTime
+  //isSubmitEvent
 } from '../utils/movie.js';
 import {
   Emoji,
@@ -143,13 +144,13 @@ const createPopupTemplate = (data, movie) => {
 
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
-           ${createNewComentEmojiTemplate(newComment.isEmoji, newComment.emoji)}
+           ${createNewComentEmojiTemplate(newComment.isEmoji, newComment.emotion)}
           </div>
 
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newComment.comment}</textarea>
           </label>
-          ${createEmojiListTemplate(newComment.emoji)}
+          ${createEmojiListTemplate(newComment.emotion)}
         </div>
       </section>
     </div>
@@ -206,8 +207,8 @@ export default class Popup extends SmartView {
     this.updateData({
       newComment: Object.assign({},
         this._data.newComment, {
-          isEmoji: this._data.newComment.emoji !== evt.target.value,
-          emoji: this._data.newComment.emoji === evt.target.value ? '' : evt.target.value,
+          isEmoji: this._data.newComment.emotion !== evt.target.value,
+          emotion: this._data.newComment.emotion === evt.target.value ? '' : evt.target.value,
         },
       ),
     });
@@ -241,7 +242,7 @@ export default class Popup extends SmartView {
 
     this.getElement()
       .querySelector('.film-details__comment-input')
-      .addEventListener('change', this._commentInputHandler);
+      .addEventListener('input', this._commentInputHandler);
   }
 
   setCommentDeleteClickHandler(callback) {
@@ -284,9 +285,7 @@ export default class Popup extends SmartView {
 
   static parseDataToMovie(data) {
     data = JSON.parse(JSON.stringify(data));
-
     delete data.isComments;
-
     return data;
   }
 
@@ -300,6 +299,10 @@ export default class Popup extends SmartView {
 
   getData() {
     return this._data;
+  }
+
+  getLocalComment() {
+    return this._data.newComment;
   }
 
   restore(prevData) {

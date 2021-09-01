@@ -1,7 +1,9 @@
 import MovieCardView from '../view/movie-card.js';
 import PopupView from '../view/popup.js';
 import {
-  isEscEvent
+  isEscEvent,
+  getTodayDate,
+  isSubmitEvent
 } from '../utils/movie.js';
 import {
   render,
@@ -19,7 +21,7 @@ import {
 import {
   allComments
 } from '../mock/comment.js';
-
+import { nanoid } from 'nanoid';
 
 export default class Movie {
   constructor(listComponent, popupContainer, changeData, changeMode, commentsModel) {
@@ -36,6 +38,7 @@ export default class Movie {
 
     this._handleMovieCardClick = this._handleMovieCardClick.bind(this);
     this._escKeydownHendler = this._escKeydownHendler.bind(this);
+    this._submitKeydownHendler = this._submitKeydownHendler.bind(this);
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleAddToFavoritesClick = this._handleAddToFavoritesClick.bind(this);
@@ -113,6 +116,7 @@ export default class Movie {
   _hidePopup() {
     hidePopup(this._popupContainer, this._popupComponent);
     document.removeEventListener('keydown', this._escKeydownHendler);
+    document.removeEventListener('keydown', this._submitKeydownHendler);
     this._mode = Mode.DEFAULT;
   }
 
@@ -120,6 +124,7 @@ export default class Movie {
     this._initPopup();
     showPopup(this._popupContainer, this._popupComponent);
     document.addEventListener('keydown', this._escKeydownHendler);
+    document.addEventListener('keydown', this._submitKeydownHendler);
     this._changeMode();
     this._mode = Mode.SHOW;
   }
@@ -159,15 +164,12 @@ export default class Movie {
   _handleAlreadyWatchedClick(evt) {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
+    updatedMovie.userDetails.watchingDate = getTodayDate();
     if (evt !== '') {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }
-  }
-
-  _handleSaveData() {
-
   }
 
   _hadleDeleteCommentClick(updateId) {
@@ -182,13 +184,37 @@ export default class Movie {
     );
   }
 
-
   _escKeydownHendler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this._popupComponent.reset(this._movie, this._movieComments);
       this._hidePopup();
       this._popupComponent = null;
+    }
+  }
+
+  _submitKeydownHendler(evt) {
+    if (isSubmitEvent(evt)) {
+      evt.preventDefault();
+      const localComment = this._popupComponent.getLocalComment();
+      if ((localComment.comment === '') || (localComment.emotion ==='')) {
+        return;
+      }
+      delete localComment.isEmoji;
+      const commentId = nanoid();
+      this._movie.comments.unshift(commentId);
+      this._changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.PATCH,
+        this._movie,
+        Object.assign({},
+          localComment,
+          {id: commentId,
+            date: getTodayDate(),
+          },
+        ),
+      );
+      this._popupComponent.reset(this._movie, this._movieComments);
     }
   }
 }

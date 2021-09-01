@@ -14,13 +14,13 @@ export default class Comments extends AbstractObserver {
     this._comments = comments.slice();
   }
 
-  addComment(updateType, update) {
+  addComment(updateType, updateMovie, updateComment) {
     this._comments = [
-      update,
+      updateComment,
       ...this._comments,
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, updateMovie);
   }
 
   deleteComment(updateType, updateMovie, updateComment) {

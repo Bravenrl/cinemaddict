@@ -64,7 +64,7 @@ export const SortText = {
 
 export const NewComment = {
   isEmoji: false,
-  emoji: '',
+  emotion: '',
   comment: '',
 };
 
