@@ -1,8 +1,7 @@
 import FooterStatisticView from './view/footer-statistic.js';
-import HeaderProfileView from './view/header-profile.js';
 import MoviesModel from './model/movies.js';
-// import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
+import CommentsModel from './model/comments.js';
 import { generateMovie } from './mock/movie.js';
 import { allComments } from './mock/comment.js';
 import { render } from './utils/render.js';
@@ -12,8 +11,7 @@ import {
 } from './const.js';
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterNavigationPresenter from './presenter/filter.js';
-import CommentsModel from './model/comments.js';
-import HeaderBord from './presenter/header.js';
+import HeaderBordPresenter from './presenter/header.js';
 
 
 const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
@@ -32,8 +30,7 @@ const siteBodyElement = document.querySelector('body');
 
 const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel);
 const filterPresenter = new FilterNavigationPresenter(siteMainElement, filterModel, moviesModel);
-const headerBordPresenter = new HeaderBord (siteHeaderElement, moviesModel);
-//render(siteHeaderElement, new HeaderProfileView(movies), RenderPosition.BEFOREEND);
+const headerBordPresenter = new HeaderBordPresenter (siteHeaderElement, moviesModel);
 
 headerBordPresenter.init();
 filterPresenter.init();

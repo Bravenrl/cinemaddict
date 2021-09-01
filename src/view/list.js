@@ -1,4 +1,5 @@
 import Abstract from './absrtact';
+import {ListEmptyTextType } from '../const';
 
 const createListTemplate = (title, headingClass, sectionClass) => (
   `<section class="films-list ${sectionClass}">
@@ -9,7 +10,7 @@ const createListTemplate = (title, headingClass, sectionClass) => (
 export default class List extends Abstract{
   constructor (title, headingClass='', sectionClass='') {
     super();
-    this._title = title;
+    this._title = (headingClass==='')&&(sectionClass==='') ? ListEmptyTextType[title] : title;
     this._headingClass = headingClass;
     this._sectionClass = sectionClass;
   }

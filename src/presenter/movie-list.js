@@ -20,7 +20,8 @@ import {
   CssClass,
   SortType,
   UpdateType,
-  UserAction
+  UserAction,
+  FilterType
 } from '../const.js';
 import { filter } from '../utils/filter.js';
 import { allComments } from '../mock/comment.js';
@@ -39,6 +40,7 @@ export default class MovieList {
     this._popupContainer = popupContainer;
     this._renderedMovieCount = CardCount.GENERAL_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
+    this._filterType = FilterType.ALL;
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
@@ -46,7 +48,7 @@ export default class MovieList {
     this._listComponent = new ListView(ListTitle.ALL_MOVIES, CssClass.HEADING);
     this._listTopRatedComponent = new ListView(ExtraCardTitle.TOP_RATED, '', CssClass.SECTION);
     this._listMostCommentedComponent = new ListView(ExtraCardTitle.MOST_COMMENTED, '', CssClass.SECTION);
-    this._listComponentEmpty = new ListView(ListTitle.EMPTY);
+
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -59,9 +61,9 @@ export default class MovieList {
   }
 
   _getMovies() {
-    const filterType = this._filterModel.getFilter();
+    this._filterType = this._filterModel.getFilter();
     const movies = this._moviesModel.movies;
-    const filtredMovies = filter[filterType](movies);
+    const filtredMovies = filter[this._filterType](movies);
 
     switch (this._currentSortType) {
       case SortType.DATE:
@@ -177,7 +179,6 @@ export default class MovieList {
       movieTopCardPresenter.init(movie);
       this._movieTopCardPresenter.set(movie.id, movieTopCardPresenter);
     }
-
   }
 
   _renderCards(container, movies) {
@@ -196,6 +197,7 @@ export default class MovieList {
   }
 
   _renderListNoMovies() {
+    this._listComponentEmpty = new ListView(this._filterType);
     render(this._movieBoardComponent, this._listComponentEmpty, RenderPosition.AFTERBEGIN);
   }
 
@@ -207,7 +209,10 @@ export default class MovieList {
 
     remove(this._showMoreButtonComponent);
     remove(this._sortComponent);
-    remove(this._listComponentEmpty);
+
+    if (this._listComponentEmpty) {
+      remove(this._listComponentEmpty);
+    }
 
     if (resetRenderedMovieCount) {
       this._renderedMovieCount = CardCount.GENERAL_PER_STEP;
