@@ -13,6 +13,7 @@ import {
 import {
   getReleaseDate
 } from '../utils/movie.js';
+import he from 'he';
 
 
 const isActive = (isDetails) => (isDetails) ? ('film-details__control-button--active') : '';
@@ -45,7 +46,7 @@ const createCommentsTemplate = (comments, isComments) => (isComments) ? (`
               <img src=${Emoji[comment.emotion]} width="55" height="55" alt="emoji-smile">
             </span>
             <div>
-              <p class="film-details__comment-text">${comment.comment}</p>
+              <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
                 <span class="film-details__comment-day">${getCommentDate(comment.date)}</span>
