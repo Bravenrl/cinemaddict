@@ -13,6 +13,7 @@ import {
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterNavigationPresenter from './presenter/filter.js';
 import CommentsModel from './model/comments.js';
+import HeaderBord from './presenter/header.js';
 
 
 const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
@@ -31,9 +32,10 @@ const siteBodyElement = document.querySelector('body');
 
 const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel);
 const filterPresenter = new FilterNavigationPresenter(siteMainElement, filterModel, moviesModel);
+const headerBordPresenter = new HeaderBord (siteHeaderElement, moviesModel);
+//render(siteHeaderElement, new HeaderProfileView(movies), RenderPosition.BEFOREEND);
 
-render(siteHeaderElement, new HeaderProfileView(movies), RenderPosition.BEFOREEND);
-
+headerBordPresenter.init();
 filterPresenter.init();
 
 moviePresenter.init();

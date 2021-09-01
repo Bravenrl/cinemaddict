@@ -102,7 +102,9 @@ export default class Movie {
 
   destroy() {
     remove(this._movieCardComponent);
-    remove(this._popupComponent);
+    if (this._popupComponent !== null) {
+      remove(this._popupComponent);
+    }
   }
 
   resetPopup() {
