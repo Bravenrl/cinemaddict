@@ -77,6 +77,7 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
+  POPUP: 'POPUP',
   MAJOR: 'MAJOR',
 };
 

@@ -122,7 +122,7 @@ export default class Movie {
     this._mode = Mode.DEFAULT;
   }
 
-  _showPopup() {
+  showNewPopup() {
     this._initPopup();
     showPopup(this._popupContainer, this._popupComponent);
     document.addEventListener('keydown', this._escKeydownHendler);
@@ -133,7 +133,7 @@ export default class Movie {
 
   _handleMovieCardClick() {
     if (this._mode !== Mode.SHOW) {
-      this._showPopup();
+      this.showNewPopup();
     }
   }
 
@@ -147,7 +147,7 @@ export default class Movie {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.watchlist = !this._movie.userDetails.watchlist;
     if (evt !== '') {
-      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }
@@ -157,7 +157,7 @@ export default class Movie {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.favorite = !this._movie.userDetails.favorite;
     if (evt !== '') {
-      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }
@@ -168,7 +168,7 @@ export default class Movie {
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
     updatedMovie.userDetails.watchingDate = getTodayDate();
     if (evt !== '') {
-      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }

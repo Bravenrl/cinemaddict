@@ -114,6 +114,22 @@ export default class MovieList {
           this._renderListMostComment();
         }
         break;
+      case UpdateType.POPUP:
+        this._clearList();
+        this._renderList();
+        if (this._movieCardPresenter.has(data.id)) {
+          this._movieCardPresenter.get(data.id).init(data);
+          this._movieCardPresenter.get(data.id).showNewPopup();
+        }
+        if (this._movieTopCardPresenter.has(data.id)) {
+          this._movieTopCardPresenter.get(data.id).init(data);
+          this._movieTopCardPresenter.get(data.id).showNewPopup();
+        }
+        if (this._movieCommentCardPresenter.has(data.id)) {
+          this._movieCommentCardPresenter.get(data.id).init(data);
+          this._movieCommentCardPresenter.get(data.id).showNewPopup();
+        }
+        break;
       case UpdateType.MINOR:
         this._clearList();
         this._renderList();
