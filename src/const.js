@@ -29,7 +29,8 @@ export const CardCount = {
   ADDITION: 2,
 };
 
-export const ExtraCardTitle = {
+export const CardTitle = {
+  ALL: 'All movies',
   TOP_RATED: 'Top rated',
   MOST_COMMENTED : 'Most commented',
 };
@@ -94,3 +95,5 @@ export const ListEmptyTextType = {
   [FilterType.HISTORY]: 'There are no watched movies now',
   [FilterType.FAVORITE]: 'There are no favorite movies now',
 };
+
+

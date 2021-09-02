@@ -14,14 +14,14 @@ import {
 } from '../utils/render.js';
 import {
   RenderPosition,
-  ExtraCardTitle,
   CardCount,
   ListTitle,
   CssClass,
   SortType,
   UpdateType,
   UserAction,
-  FilterType
+  FilterType,
+  CardTitle
 } from '../const.js';
 import { filter } from '../utils/filter.js';
 import { allComments } from '../mock/comment.js';
@@ -46,8 +46,8 @@ export default class MovieList {
     this._showMoreButtonComponent = null;
     this._movieBoardComponent = new FilmsView();
     this._listComponent = new ListView(ListTitle.ALL_MOVIES, CssClass.HEADING);
-    this._listTopRatedComponent = new ListView(ExtraCardTitle.TOP_RATED, '', CssClass.SECTION);
-    this._listMostCommentedComponent = new ListView(ExtraCardTitle.MOST_COMMENTED, '', CssClass.SECTION);
+    this._listTopRatedComponent = new ListView(CardTitle.TOP_RATED, '', CssClass.SECTION);
+    this._listMostCommentedComponent = new ListView(CardTitle.MOST_COMMENTED, '', CssClass.SECTION);
 
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -86,10 +86,10 @@ export default class MovieList {
     this._renderListMostComment();
   }
 
-  _handleViewAction(actionType, updateType, updateMovie, updateComment) {
+  _handleViewAction(actionType, updateType, updateMovie, updateComment, cardTitle) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._moviesModel.updateMovie(updateType, updateMovie);
+        this._moviesModel.updateMovie(updateType, updateMovie, cardTitle);
         break;
       case UserAction.DELETE_COMMENT:
         this._commentsModel.deleteComment(updateType, updateMovie, updateComment);
@@ -99,7 +99,7 @@ export default class MovieList {
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updateType, data, cardTitle) {
     switch (updateType) {
       case UpdateType.PATCH:
         if (this._movieCardPresenter.has(data.id)) {
@@ -119,20 +119,44 @@ export default class MovieList {
         this._renderList();
         if (this._movieCardPresenter.has(data.id)) {
           this._movieCardPresenter.get(data.id).init(data);
-          this._movieCardPresenter.get(data.id).showNewPopup();
         }
         if (this._movieTopCardPresenter.has(data.id)) {
           this._movieTopCardPresenter.get(data.id).init(data);
-          this._movieTopCardPresenter.get(data.id).showNewPopup();
         }
         if (this._movieCommentCardPresenter.has(data.id)) {
           this._movieCommentCardPresenter.get(data.id).init(data);
-          this._movieCommentCardPresenter.get(data.id).showNewPopup();
+        }
+        switch (cardTitle) {
+          case CardTitle.ALL:
+            if (this._movieCardPresenter.has(data.id)) {
+              this._movieCardPresenter.get(data.id).showNewPopup();
+            }
+            break;
+          case CardTitle.MOST_COMMENTED:
+            if (this._movieCommentCardPresenter.has(data.id)) {
+              this._movieCommentCardPresenter.get(data.id).resetPopup();
+              this._movieCommentCardPresenter.get(data.id).showNewPopup();
+            }
+            break;
+          case CardTitle.TOP_RATED:
+            if (this._movieTopCardPresenter.has(data.id)) {
+              this._movieTopCardPresenter.get(data.id).resetPopup();
+              this._movieTopCardPresenter.get(data.id).showNewPopup();
+            }
+            break;
+
         }
         break;
+
       case UpdateType.MINOR:
         this._clearList();
         this._renderList();
+        if (this._movieTopCardPresenter.has(data.id)) {
+          this._movieTopCardPresenter.get(data.id).init(data);
+        }
+        if (this._movieCommentCardPresenter.has(data.id)) {
+          this._movieCommentCardPresenter.get(data.id).init(data);
+        }
         break;
       case UpdateType.MAJOR:
         this._clearList({resetRenderedMovieCount: true, resetSortType: true});
@@ -181,17 +205,17 @@ export default class MovieList {
 
   _renderMovieCard(container, movie) {
     if (container === this._listComponent) {
-      const movieCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel);
+      const movieCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel, CardTitle.ALL);
       movieCardPresenter.init(movie);
       this._movieCardPresenter.set(movie.id, movieCardPresenter);
     }
     if (container === this._listMostCommentedComponent) {
-      const movieCommentCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel);
+      const movieCommentCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel, CardTitle.MOST_COMMENTED);
       movieCommentCardPresenter.init(movie);
       this._movieCommentCardPresenter.set(movie.id, movieCommentCardPresenter);
     }
     if (container === this._listTopRatedComponent) {
-      const movieTopCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel);
+      const movieTopCardPresenter = new MovieCard(container, this._popupContainer, this._handleViewAction, this._handleChangeMode, this._commentsModel, CardTitle.TOP_RATED);
       movieTopCardPresenter.init(movie);
       this._movieTopCardPresenter.set(movie.id, movieTopCardPresenter);
     }
@@ -276,6 +300,18 @@ export default class MovieList {
       const movies = moviesMostCommented.slice(0, Math.min(moviesMostCommented.length, CardCount.ADDITION));
       this._renderCards(this._listMostCommentedComponent, movies);
     }
+  }
+
+  _clearListTopRaited() {
+    this._movieTopCardPresenter.forEach((presenter) => presenter.destroy());
+    this._movieTopCardPresenter.clear();
+    document.body.classList.remove('hide-overflow');
+  }
+
+  _clearListMostComment() {
+    this._movieCommentCardPresenter.forEach((presenter) => presenter.destroy());
+    this._movieCommentCardPresenter.clear();
+    document.body.classList.remove('hide-overflow');
   }
 
 }

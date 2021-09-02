@@ -24,13 +24,14 @@ import {
 import { nanoid } from 'nanoid';
 
 export default class Movie {
-  constructor(listComponent, popupContainer, changeData, changeMode, commentsModel) {
+  constructor(listComponent, popupContainer, changeData, changeMode, commentsModel, cardTitle) {
     this._popupContainer = popupContainer;
     this._listComponent = listComponent;
     this._changeMode = changeMode;
     this._changeData = changeData;
     this._mode = Mode.DEFAULT;
     this._commentsModel = commentsModel;
+    this._cardTitle = cardTitle;
     this._movieCardComponent = null;
     this._popupComponent = null;
 
@@ -147,7 +148,7 @@ export default class Movie {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.watchlist = !this._movie.userDetails.watchlist;
     if (evt !== '') {
-      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie);
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie, '', this._cardTitle);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }
@@ -157,7 +158,7 @@ export default class Movie {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.favorite = !this._movie.userDetails.favorite;
     if (evt !== '') {
-      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie);
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie, '', this._cardTitle);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }
@@ -168,7 +169,7 @@ export default class Movie {
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
     updatedMovie.userDetails.watchingDate = getTodayDate();
     if (evt !== '') {
-      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie);
+      this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie, '', this._cardTitle);
     } else {
       this._changeData(UserAction.UPDATE_MOVIE, UpdateType.MINOR, updatedMovie);
     }
