@@ -52,17 +52,17 @@ export default class MovieCard extends Abstract {
 
   _clickAddToWatchlistHandler(evt) {
     evt.preventDefault();
-    this._callback.onAddToWatchlistClick();
+    this._callback.onAddToWatchlistClick(evt.target.name);
   }
 
   _clickAlreadyWatchedHandler(evt) {
     evt.preventDefault();
-    this._callback.onAlreadyWatchedClick();
+    this._callback.onAlreadyWatchedClick(evt.target.name);
   }
 
   _clickAddToFavoritesHandler(evt) {
     evt.preventDefault();
-    this._callback.onAddToFavoritesClick();
+    this._callback.onAddToFavoritesClick(evt.target.name);
   }
 
 

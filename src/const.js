@@ -20,6 +20,7 @@ export const ProfileRank = {
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
+  BEFOREBEGIN: 'beforebegin',
 };
 
 export const CardCount = {
@@ -28,7 +29,8 @@ export const CardCount = {
   ADDITION: 2,
 };
 
-export const ExtraCardTitle = {
+export const CardTitle = {
+  ALL: 'All movies',
   TOP_RATED: 'Top rated',
   MOST_COMMENTED : 'Most commented',
 };
@@ -55,9 +57,44 @@ export const SortType = {
   DATE: 'date',
 };
 
+export const SortText = {
+  DEFAULT: 'Sort by default',
+  RATING: 'Sort by rating',
+  DATE: 'Sort by date',
+};
+
 export const NewComment = {
   isEmoji: false,
-  emoji: '',
+  emotion: '',
   comment: '',
 };
+
+export const UserAction = {
+  UPDATE_MOVIE: 'UPDATE_MOVIE',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  PATCH_POPUP: 'PATCH_POPUP',
+  MINOR: 'MINOR',
+  POPUP: 'POPUP',
+  MAJOR: 'MAJOR',
+};
+
+export const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITE: 'favorites',
+};
+
+export const ListEmptyTextType = {
+  [FilterType.ALL]: 'There are no movies in our database',
+  [FilterType.WATCHLIST]: 'There are no movies to watch now',
+  [FilterType.HISTORY]: 'There are no watched movies now',
+  [FilterType.FAVORITE]: 'There are no favorite movies now',
+};
+
 
