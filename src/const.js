@@ -49,6 +49,7 @@ export const CssClass = {
 export const Mode = {
   DEFAULT: 'DEFAULT',
   SHOW: 'SHOW',
+  INIT: 'INIT',
 };
 
 export const SortType = {
@@ -88,6 +89,7 @@ export const FilterType = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITE: 'favorites',
+  STATS: 'Stats',
 };
 
 export const ListEmptyTextType = {

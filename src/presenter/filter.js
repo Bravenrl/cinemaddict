@@ -4,11 +4,11 @@ import { render, remove, replace } from '../utils/render.js';
 import { filter } from '../utils/filter.js';
 
 export default class Filter {
-  constructor(filterContainer, filterModel, moviesModel) {
+  constructor(filterContainer, filterModel, moviesModel, handleSiteMenuClick) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._moviesModel = moviesModel;
-
+    this._handleSiteMenuClick = handleSiteMenuClick;
     this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -24,6 +24,7 @@ export default class Filter {
 
     this._filterComponent = new FilterNavigationView(filters, this._filterModel.getFilter());
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.setShowStatsHandler(this._handleSiteMenuClick);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.AFTERBEGIN);
@@ -42,7 +43,6 @@ export default class Filter {
     if (this._filterModel.getFilter() === filterType) {
       return;
     }
-
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
