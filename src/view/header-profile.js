@@ -1,13 +1,5 @@
-import Abstract from './absrtact';
-import { ProfileRank } from '../const';
-
-const getRating = (movies) => {
-  const rating = movies.filter((movie) => movie.userDetails.alreadyWatched).length;
-  if ((rating>=ProfileRank.novice.from)&&(rating<=ProfileRank.novice.to)) {return 'novice';}
-  if ((rating>=ProfileRank.fan.from)&&(rating<=ProfileRank.fan.to)) {return 'fan';}
-  if ((rating>=ProfileRank.movieBuff.from)&&(rating<ProfileRank.movieBuff.to)) {return 'movie buff';}
-  return '';
-};
+import Abstract from './absrtact.js';
+import { getRating } from '../utils/stats.js';
 
 const createProfileTemplate = (movies) => (
   `<section class="header__profile profile">

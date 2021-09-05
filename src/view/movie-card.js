@@ -1,14 +1,12 @@
 import Abstract from './absrtact';
 import { humanizeMovieTime, getYear } from '../utils/movie.js';
 
-const isActive = (details) => {
-  if (details) {return 'film-card__controls-item--active';
-  } else {return '';}
-};
+const isActive = (details) => (details) ? 'film-card__controls-item--active' : '';
 
 const getDescription = (descriptions) => {
   const fullDescription = descriptions.join(' ');
-  if (fullDescription.length > 140) {return `${fullDescription.slice(0,139)}...`;
+  if (fullDescription.length > 140) {
+    return `${fullDescription.slice(0,139)}...`;
   }
   return fullDescription;
 };
