@@ -3,24 +3,27 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 
-import { getDateFrom, getRating, getDuration, getCountGenres, getTopGenre, getWathedMoviesInRange, getSortGenreKeys, getSortGenreValues } from '../utils/stats.js';
+import { getAllGenres, getDateFrom, getRating, getDuration, getCountGenres, getTopGenre, getWathedMoviesInRange, getSortGenreKeys, getSortGenreValues } from '../utils/stats.js';
 import { filter } from '../utils/filter.js';
 import { FilterType, DurationType, DateType } from '../const.js';
 
 const CANVAS_HEIGHT = 50;
 
-const renderChart = (statisticCtx, {movies, dateFrom, dateTo}) => {
-  const rangedMovies = getWathedMoviesInRange(movies, dateFrom, dateTo);
-  if (rangedMovies.length < 1) {
+const renderChart = (statisticCtx, {movies, dateFrom, dateTo, target}) => {
+  const rangedMovies = getWathedMoviesInRange(movies, dateFrom, dateTo, target);
+  const allGenres = getAllGenres(rangedMovies);
+  if (allGenres.length === 0) {
     return;
   }
+  const countGenres = getCountGenres(allGenres);
+  statisticCtx.height =  Object.keys(countGenres).length * CANVAS_HEIGHT;
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: getSortGenreKeys(rangedMovies),
+      labels: getSortGenreKeys(countGenres),
       datasets: [{
-        data: getSortGenreValues(rangedMovies),
+        data: getSortGenreValues(countGenres),
         backgroundColor: '#ffe800',
         hoverBackgroundColor: '#ffe800',
         anchor: 'start',
@@ -74,8 +77,9 @@ const renderChart = (statisticCtx, {movies, dateFrom, dateTo}) => {
 
 
 const createStatisticTemplate = ({movies, dateFrom, dateTo, target}) => {
-  const rangedMovies = getWathedMoviesInRange(movies, dateFrom, dateTo);
-  const canvasHeight =  Object.keys(getCountGenres(rangedMovies)).length * CANVAS_HEIGHT || CANVAS_HEIGHT;
+  const rangedMovies = getWathedMoviesInRange(movies, dateFrom, dateTo, target);
+  const allGenres = getAllGenres(rangedMovies);
+  const countGenres = getCountGenres(allGenres);
 
   return (`<section class="statistic">
     <p class="statistic__rank">
@@ -114,22 +118,22 @@ const createStatisticTemplate = ({movies, dateFrom, dateTo, target}) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">${getTopGenre(rangedMovies)}</p>
+        <p class="statistic__item-text">${allGenres.length !==0 ? getTopGenre(countGenres) : 'No Genre'}</p>
       </li>
     </ul>
     <div class="statistic__chart-wrap">
-      <canvas class="statistic__chart" width="1000" height="${canvasHeight}"></canvas>
+      <canvas class="statistic__chart" width="1000"></canvas>
     </div>` : '<div><h2 class="films-list__title">There are no watched movies in range</h2></div>'}
 </section>`);
 };
 
 export default class Statistic extends Smart {
-  constructor (movies) {
+  constructor (allMovies) {
     super();
-    this._watchedMovies = filter[FilterType.HISTORY](movies);
+    this._watchedMovies = filter[FilterType.HISTORY](allMovies);
     this._data = {
-      movies,
-      dateFrom: dayjs().subtract(100, 'years').toDate(),
+      movies: this._watchedMovies,
+      dateFrom: dayjs().toDate(),
       dateTo: dayjs().toDate(),
       target: DateType.ALL,
     };
@@ -152,6 +156,7 @@ export default class Statistic extends Smart {
     const type = evt.target.value;
     const dateFrom = getDateFrom(type);
     this.updateData({
+      dateTo: dayjs().toDate(),
       dateFrom,
       target: type,
     });

@@ -4,8 +4,10 @@ import { FilterType } from '../const.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import isBetween from 'dayjs/plugin/isBetween';
+import isToday from 'dayjs/plugin/isToday';
 dayjs.extend(duration);
 dayjs.extend(isBetween);
+dayjs.extend(isToday);
 
 export const getRating = (movies) => {
   const rating = filter[FilterType.HISTORY](movies).length;
@@ -21,13 +23,17 @@ export const getRating = (movies) => {
   return '';
 };
 
-export const getWathedMoviesInRange = (movies, dateFrom, dateTo) =>
+export const getWathedMoviesInRange = (movies, dateFrom, dateTo, target) =>
   movies.reduce((moviesInRange, movie) => {
-    if (
-      dayjs(movie.userDetails.watchingDate).isSame(dateFrom) ||
-    dayjs(movie.userDetails.watchingDate).isBetween(dateFrom, dateTo) ||
-    dayjs(movie.userDetails.watchingDate).isSame(dateTo)
-    ) {
+    if (target===DateType.ALL) {
+      moviesInRange.push(movie);
+      return moviesInRange;
+    }
+    if (target===DateType.TODAY && dayjs(movie.userDetails.watchingDate).isToday()) {
+      moviesInRange.push(movie);
+      return moviesInRange;
+    }
+    if (dayjs(movie.userDetails.watchingDate).isBetween(dateFrom, dateTo, null, [])) {
       moviesInRange.push(movie);
     }
     return moviesInRange;
@@ -45,36 +51,19 @@ export const getDuration = (movies, type) => {
 
 export const getAllGenres = (movies) => movies.reduce((genre, movie) => [...genre, ...movie.filmInfo.genre], []);
 
-export const getCountGenres = (movies) => getAllGenres(movies)
-  .reduce( (total, ganre) => {
-    total[ganre] = (total[ganre] || 0) + 1 ;
-    return total;
-  } , {});
+export const getCountGenres = (allGenres) => allGenres.reduce( (total, ganre) => {
+  total[ganre] = (total[ganre] || 0) + 1 ;
+  return total;
+} , {});
 
-export const getTopGenre = (movies) => {
-  const genres = getCountGenres(movies);
-  return Object.keys(genres).reduce((max, current) => (genres[max] > genres[current]) ? max : current);
-};
+export const getTopGenre = (genres) => Object.keys(genres).reduce((max, current) => (genres[max] > genres[current]) ? max : current);
 
-export const getSortGenreKeys = (movies) => {
-  const genres = getCountGenres(movies);
-  return Object.keys(genres).sort((a,b) => genres[b]-genres[a]);
-};
+export const getSortGenreKeys = (genres) => Object.keys(genres).sort((a,b) => genres[b]-genres[a]);
 
-export const getSortGenreValues = (movies) => {
-  const genres = getCountGenres(movies);
-  return Object.values(genres).sort((a,b) => b-a);
-};
+export const getSortGenreValues = (genres) => Object.values(genres).sort((a,b) => b-a);
 
 export const getDateFrom = (type) => {
-  let countAgo = 1;
-  if (type === DateType.ALL) {
-    countAgo = 100;
-    return dayjs().subtract(countAgo, 'years').toDate();
-  }
-  if (type === DateType.TODAY) {
-    return dayjs().toDate();
-  }
+  const countAgo = 1;
   return dayjs().subtract(countAgo, type).toDate();
 };
 

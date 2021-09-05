@@ -63,6 +63,7 @@ let movieCount = 0;
 export const generateMovie = () => {
   const alreadyWatched = Boolean(getRandomInteger(0, 1));
   const watchingDate = (alreadyWatched) ? generateDate() : '';
+  const watchlist = !alreadyWatched;
 
 
   return {
@@ -86,7 +87,7 @@ export const generateMovie = () => {
       description: getRandomArrayNonRepeat(DESCRIPTIONS),
     },
     userDetails: {
-      watchlist: Boolean(getRandomInteger(0, 1)),
+      watchlist,
       alreadyWatched,
       watchingDate,
       favorite: Boolean(getRandomInteger(0, 1)),

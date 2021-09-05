@@ -42,7 +42,7 @@ const headerBordPresenter = new HeaderBordPresenter(siteHeaderElement, moviesMod
 
 headerBordPresenter.init();
 
-// moviePresenter.init();
+moviePresenter.init();
 
 
 let statisticsComponent = null;
@@ -62,8 +62,7 @@ const handleSiteMenuClick = (target) => {
   }
   statisticsComponent=null;
 };
+
 const filterPresenter = new FilterNavigationPresenter(siteMainElement, filterModel, moviesModel, handleSiteMenuClick);
 filterPresenter.init();
-statisticsComponent = new StatisticView(moviesModel.movies);
-render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 render(siteFooterElement, new FooterStatisticView(movies.length), RenderPosition.BEFOREEND);

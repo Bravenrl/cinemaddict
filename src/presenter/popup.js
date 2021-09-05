@@ -104,6 +104,8 @@ export default class Popup {
   _handleAddToWatchlistClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.watchlist = !this._movie.userDetails.watchlist;
+    updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
+    updatedMovie.userDetails.watchingDate = '';
     this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie, '', this._cardTitle);
   }
 
@@ -117,6 +119,7 @@ export default class Popup {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
     updatedMovie.userDetails.watchingDate = getTodayDate();
+    updatedMovie.userDetails.watchlist = !this._movie.userDetails.watchlist;
     this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie, '', this._cardTitle);
   }
 
