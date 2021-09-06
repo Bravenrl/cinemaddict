@@ -22,7 +22,8 @@ import {
   UpdateType,
   UserAction,
   FilterType,
-  CardTitle
+  CardTitle,
+  Mode
 } from '../const.js';
 import { filter } from '../utils/filter.js';
 import { allComments } from '../mock/comment.js';
@@ -42,6 +43,7 @@ export default class MovieList {
     this._renderedMovieCount = CardCount.GENERAL_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
+    this._mode = Mode.DEFAULT;
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
@@ -55,9 +57,7 @@ export default class MovieList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortMovies = this._handleSortMovies.bind(this);
-    this._moviesModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-    this._commentsModel.addObserver(this._handleModelEvent);
+
 
     this._popupPresenter = new PopupCard(this._popupContainer, this._handleViewAction, this._commentsModel);
   }
@@ -82,10 +82,15 @@ export default class MovieList {
   }
 
   init() {
+    if (this._mode !== Mode.DEFAULT) { return; }
     render(this._movieBoardContainer, this._movieBoardComponent, RenderPosition.BEFOREEND);
     this._renderList();
     this._renderListTopRaited();
     this._renderListMostComment();
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
+    this._mode = Mode.INIT;
   }
 
   _handleViewAction(actionType, updateType, updateMovie, updateComment) {
@@ -234,7 +239,7 @@ export default class MovieList {
     const movieCount = this._getMovies().length;
     this._movieCardPresenter.forEach((presenter) => presenter.destroy());
     this._movieCardPresenter.clear();
-    this._popupPresenter.destroy();
+    this._popupPresenter.resetPopup();
     remove(this._showMoreButtonComponent);
     remove(this._sortComponent);
     if (this._listComponentEmpty) {
@@ -255,6 +260,12 @@ export default class MovieList {
     this._movieCommentCardPresenter.forEach((presenter) => presenter.destroy());
     this._movieCommentCardPresenter.clear();
     remove(this._listMostCommentedComponent);
+  }
+
+  _clearListTopRaited() {
+    this._movieTopCardPresenter.forEach((presenter) => presenter.destroy());
+    this._movieTopCardPresenter.clear();
+    remove(this._listTopRatedComponent);
   }
 
   _renderList() {
@@ -288,5 +299,17 @@ export default class MovieList {
       const movies = moviesMostCommented.slice(0, Math.min(moviesMostCommented.length, CardCount.ADDITION));
       this._renderCards(this._listMostCommentedComponent, movies);
     }
+  }
+
+  destroy() {
+    this._clearList({resetRenderedMovieCount: true, resetSortType: true});
+    this._mode = Mode.DEFAULT;
+    this._clearListMostComment();
+    this._clearListTopRaited();
+    remove(this._movieBoardComponent);
+    this._moviesModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
+
   }
 }

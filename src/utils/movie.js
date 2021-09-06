@@ -9,7 +9,7 @@ export const humanizeMovieTime = (time) => dayjs.duration(time, 'minutes').forma
 export const getCommentDate = (commentDate) => dayjs(commentDate).fromNow();
 export const getYear = (date) => dayjs(date).format('YYYY');
 export const getReleaseDate = (date) => dayjs(date).format('DD MMMM YYYY');
-export const getTodayDate = () => dayjs().format();
+export const getTodayDate = () => dayjs().toDate();
 
 export const compareTotalRating = (objA, objB) => objB.filmInfo.totalRating - objA.filmInfo.totalRating;
 

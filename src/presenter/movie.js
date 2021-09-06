@@ -1,8 +1,5 @@
 import MovieCardView from '../view/movie-card.js';
 import {
-  getTodayDate
-} from '../utils/movie.js';
-import {
   render,
   replace,
   remove
@@ -77,7 +74,6 @@ export default class Movie {
   _handleAlreadyWatchedClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
-    updatedMovie.userDetails.watchingDate = getTodayDate();
     this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
   }
 

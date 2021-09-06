@@ -6,13 +6,19 @@ export const Emoji = {
 };
 
 export const ProfileRank = {
-  novice: {from: 1,
+  novice: {
+    rank: 'novice',
+    from: 1,
     to: 10,
   },
-  fan: {from: 11,
+  fan: {
+    rank: 'fan',
+    from: 11,
     to: 20,
   },
-  movieBuff: {from: 21,
+  movieBuff: {
+    rank: 'movieBuff',
+    from: 21,
     to: Infinity,
   },
 };
@@ -49,6 +55,7 @@ export const CssClass = {
 export const Mode = {
   DEFAULT: 'DEFAULT',
   SHOW: 'SHOW',
+  INIT: 'INIT',
 };
 
 export const SortType = {
@@ -88,6 +95,7 @@ export const FilterType = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITE: 'favorites',
+  STATS: 'Stats',
 };
 
 export const ListEmptyTextType = {
@@ -97,4 +105,15 @@ export const ListEmptyTextType = {
   [FilterType.FAVORITE]: 'There are no favorite movies now',
 };
 
+export const DurationType = {
+  HOURS: 'hours',
+  MINUTES: 'minutes',
+};
 
+export const DateType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
