@@ -285,20 +285,24 @@ export default class MovieList {
 
   _renderListTopRaited() {
     const moviesTopRaited = this._getMovies().slice().sort(compareTotalRating);
-    if (moviesTopRaited[0].filmInfo.totalRating !== 0) {
-      render(this._movieBoardComponent, this._listTopRatedComponent, RenderPosition.BEFOREEND);
-      const movies = moviesTopRaited.slice(0, Math.min(moviesTopRaited.length, CardCount.ADDITION));
-      this._renderCards(this._listTopRatedComponent, movies);
+    const movieCount = moviesTopRaited.length;
+    if (movieCount === 0) {
+      return;
     }
+    render(this._movieBoardComponent, this._listTopRatedComponent, RenderPosition.BEFOREEND);
+    const movies = moviesTopRaited.slice(0, Math.min(moviesTopRaited.length, CardCount.ADDITION));
+    this._renderCards(this._listTopRatedComponent, movies);
   }
 
   _renderListMostComment() {
     const moviesMostCommented = this._getMovies().slice().sort(compareComments);
-    if (moviesMostCommented[0].comments.length !== 0) {
-      render(this._movieBoardComponent, this._listMostCommentedComponent, RenderPosition.BEFOREEND);
-      const movies = moviesMostCommented.slice(0, Math.min(moviesMostCommented.length, CardCount.ADDITION));
-      this._renderCards(this._listMostCommentedComponent, movies);
+    const movieCount = moviesMostCommented.length;
+    if (movieCount === 0) {
+      return;
     }
+    render(this._movieBoardComponent, this._listMostCommentedComponent, RenderPosition.BEFOREEND);
+    const movies = moviesMostCommented.slice(0, Math.min(moviesMostCommented.length, CardCount.ADDITION));
+    this._renderCards(this._listMostCommentedComponent, movies);
   }
 
   destroy() {

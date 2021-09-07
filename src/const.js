@@ -1,3 +1,6 @@
+export const AUTHORIZATION = 'Basic QnJhdmVuOjEyMzQ1';
+export const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
+
 export const Emoji = {
   smile: './images/emoji/smile.png',
   sleeping: './images/emoji/sleeping.png',
@@ -117,3 +120,9 @@ export const DateType = {
   MONTH: 'month',
   YEAR: 'year',
 };
+
+export const Structure = {
+  MOVIES: 'movies',
+  COMMENTS: 'comments',
+};
+

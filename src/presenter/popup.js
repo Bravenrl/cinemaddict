@@ -116,6 +116,7 @@ export default class Popup {
   _handleAlreadyWatchedClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
+    updatedMovie.userDetails.watchingDate = (updatedMovie.userDetails.alreadyWatched) ? getTodayDate() : null;
     this._changeData(UserAction.UPDATE_MOVIE, UpdateType.POPUP, updatedMovie, '', this._cardTitle);
   }
 

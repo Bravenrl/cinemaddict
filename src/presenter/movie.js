@@ -9,6 +9,7 @@ import {
   UpdateType,
   UserAction
 } from '../const.js';
+import { getTodayDate } from '../utils/movie.js';
 
 export default class Movie {
   constructor(listComponent, changeData, popupPresenter) {
@@ -74,6 +75,7 @@ export default class Movie {
   _handleAlreadyWatchedClick() {
     const updatedMovie = JSON.parse(JSON.stringify(this._movie));
     updatedMovie.userDetails.alreadyWatched = !this._movie.userDetails.alreadyWatched;
+    updatedMovie.userDetails.watchingDate = (updatedMovie.userDetails.alreadyWatched) ? getTodayDate() : null;
     this._changeData(UserAction.UPDATE_MOVIE, UpdateType.PATCH, updatedMovie);
   }
 

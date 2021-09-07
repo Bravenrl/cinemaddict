@@ -16,20 +16,24 @@ import {
 import {
   RenderPosition,
   CardCount,
-  FilterType
+  FilterType,
+  AUTHORIZATION,
+  END_POINT,
+  Structure
 } from './const.js';
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterNavigationPresenter from './presenter/filter.js';
 import HeaderBordPresenter from './presenter/header.js';
+import Api from './api.js';
 
 
-const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
+// const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
 
-movies.forEach((movie) => movie.comments = allComments[movie.id].map((comment) => comment.id));
+// movies.forEach((movie) => movie.comments = allComments[movie.id].map((comment) => comment.id));
 
+const moviesApi = new Api(END_POINT, AUTHORIZATION, Structure.MOVIES, MoviesModel);
 const moviesModel = new MoviesModel();
 const commentsModel = new CommentsModel();
-moviesModel.movies = movies;
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
@@ -39,11 +43,6 @@ const siteBodyElement = document.querySelector('body');
 
 const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel);
 const headerBordPresenter = new HeaderBordPresenter(siteHeaderElement, moviesModel);
-
-headerBordPresenter.init();
-
-moviePresenter.init();
-
 
 let statisticsComponent = null;
 const handleSiteMenuClick = (target) => {
@@ -62,7 +61,15 @@ const handleSiteMenuClick = (target) => {
   }
   statisticsComponent=null;
 };
-
 const filterPresenter = new FilterNavigationPresenter(siteMainElement, filterModel, moviesModel, handleSiteMenuClick);
+
+
+headerBordPresenter.init();
 filterPresenter.init();
-render(siteFooterElement, new FooterStatisticView(movies.length), RenderPosition.BEFOREEND);
+moviePresenter.init();
+moviesApi.getData().then((data) => {
+  moviesModel.movies = data;
+});
+
+render(siteFooterElement, new FooterStatisticView(moviesModel.movies.length), RenderPosition.BEFOREEND);
+
