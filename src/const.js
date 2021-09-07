@@ -39,20 +39,11 @@ export const CardCount = {
 };
 
 export const CardTitle = {
-  ALL: 'All movies',
+  ALL: 'All movies. Upcoming',
   TOP_RATED: 'Top rated',
   MOST_COMMENTED : 'Most commented',
-};
-
-export const ListTitle = {
-  ALL_MOVIES: 'All movies. Upcoming',
-  EMPTY: 'There are no movies in our database',
   LOADING: 'Loading...',
-};
-
-export const CssClass = {
-  SECTION: 'films-list--extra',
-  HEADING: 'visually-hidden',
+  EMPTY: 'Empty',
 };
 
 export const Mode = {
@@ -91,6 +82,7 @@ export const UpdateType = {
   MINOR: 'MINOR',
   POPUP: 'POPUP',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterType = {

@@ -6,12 +6,14 @@ export default class Movies extends AbstractObserver {
     this._movies = [];
   }
 
-  get movies() {
+  getMovies() {
     return this._movies;
   }
 
-  set movies(movies) {
+  setMovies(updateType, movies) {
     this._movies = movies.slice();
+
+    this._notify(updateType);
   }
 
   updateMovie(updateType, update) {

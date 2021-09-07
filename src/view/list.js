@@ -1,18 +1,17 @@
 import Abstract from './absrtact';
-import {ListEmptyTextType } from '../const';
+import {CardTitle, ListEmptyTextType } from '../const';
 
-const createListTemplate = (title, headingClass, sectionClass) => (
-  `<section class="films-list ${sectionClass}">
-        <h2 class="films-list__title ${headingClass}">${title}</h2>
-        ${((headingClass === '')&(sectionClass ==='')) ?  '' : '<div class="films-list__container"></div>'}
+const createListTemplate = (title, filterType) => (
+  `<section class="films-list ${((title === CardTitle.MOST_COMMENTED) || (title === CardTitle.TOP_RATED)) ? 'films-list--extra' : ''}">
+        <h2 class="films-list__title ${(title === CardTitle.ALL) ? 'visually-hidden' : ''}">${title=== CardTitle.EMPTY ? ListEmptyTextType[filterType] : title }</h2>
+        ${((title !== CardTitle.EMPTY)&&(title !== CardTitle.LOADING)) ? '<div class="films-list__container"></div>' : ''}
     </section>`
 );
 export default class List extends Abstract{
-  constructor (title, headingClass='', sectionClass='') {
+  constructor (title, filterType) {
     super();
-    this._title = (headingClass==='')&&(sectionClass==='') ? ListEmptyTextType[title] : title;
-    this._headingClass = headingClass;
-    this._sectionClass = sectionClass;
+    this._title = title;
+    this._filterType = filterType;
   }
 
   getListContainer () {
@@ -20,7 +19,7 @@ export default class List extends Abstract{
   }
 
   getTemplate () {
-    return createListTemplate(this._title, this._headingClass, this._sectionClass);
+    return createListTemplate(this._title, this._filterType);
   }
 }
 

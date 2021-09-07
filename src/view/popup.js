@@ -125,7 +125,7 @@ const createPopupTemplate = (data, movie) => {
           </table>
 
           <p class="film-details__film-description">
-          ${filmInfo.description.join(' ')}
+          ${filmInfo.description}
           </p>
         </div>
       </div>

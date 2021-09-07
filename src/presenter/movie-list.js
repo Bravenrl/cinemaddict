@@ -16,8 +16,6 @@ import {
 import {
   RenderPosition,
   CardCount,
-  ListTitle,
-  CssClass,
   SortType,
   UpdateType,
   UserAction,
@@ -44,14 +42,15 @@ export default class MovieList {
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
     this._mode = Mode.DEFAULT;
+    this._isLoading = true;
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
     this._movieBoardComponent = new FilmsView();
-    this._listComponent = new ListView(ListTitle.ALL_MOVIES, CssClass.HEADING);
-    this._listTopRatedComponent = new ListView(CardTitle.TOP_RATED, '', CssClass.SECTION);
-    this._listMostCommentedComponent = new ListView(CardTitle.MOST_COMMENTED, '', CssClass.SECTION);
-
+    this._listComponent = new ListView(CardTitle.ALL);
+    this._listTopRatedComponent = new ListView(CardTitle.TOP_RATED);
+    this._listMostCommentedComponent = new ListView(CardTitle.MOST_COMMENTED);
+    this._listLoadingComponent = new ListView(CardTitle.LOADING);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -64,7 +63,7 @@ export default class MovieList {
 
   _getMovies() {
     this._filterType = this._filterModel.getFilter();
-    const movies = this._moviesModel.movies;
+    const movies = this._moviesModel.getMovies();
     const filtredMovies = filter[this._filterType](movies);
 
     switch (this._currentSortType) {
@@ -82,7 +81,9 @@ export default class MovieList {
   }
 
   init() {
-    if (this._mode !== Mode.DEFAULT) { return; }
+    if (this._mode !== Mode.DEFAULT) {
+      return;
+    }
     render(this._movieBoardContainer, this._movieBoardComponent, RenderPosition.BEFOREEND);
     this._renderList();
     this._renderListTopRaited();
@@ -150,6 +151,7 @@ export default class MovieList {
         }
         this._popupPresenter.showNewPopup(data);
         break;
+
       case UpdateType.MINOR:
         this._clearList();
         this._renderList();
@@ -160,9 +162,18 @@ export default class MovieList {
           this._movieCommentCardPresenter.get(data.id).init(data);
         }
         break;
+
       case UpdateType.MAJOR:
         this._clearList({resetRenderedMovieCount: true, resetSortType: true});
         this._renderList();
+        break;
+
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._listLoadingComponent);
+        this._renderList();
+        this._renderListTopRaited();
+        this._renderListMostComment();
         break;
     }
   }
@@ -230,8 +241,12 @@ export default class MovieList {
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
+  _renderLoading() {
+    render(this._movieBoardComponent, this._listLoadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderListNoMovies() {
-    this._listComponentEmpty = new ListView(this._filterType);
+    this._listComponentEmpty = new ListView(CardTitle.EMPTY, this._filterType);
     render(this._movieBoardComponent, this._listComponentEmpty, RenderPosition.AFTERBEGIN);
   }
 
@@ -242,6 +257,7 @@ export default class MovieList {
     this._popupPresenter.resetPopup();
     remove(this._showMoreButtonComponent);
     remove(this._sortComponent);
+    remove(this._listLoadingComponent);
     if (this._listComponentEmpty) {
       remove(this._listComponentEmpty);
     }
@@ -269,6 +285,10 @@ export default class MovieList {
   }
 
   _renderList() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     const movies = this._getMovies();
     const movieCount = movies.length;
     if (movieCount === 0) {
@@ -284,7 +304,10 @@ export default class MovieList {
   }
 
   _renderListTopRaited() {
-    const moviesTopRaited = this._getMovies().slice().sort(compareTotalRating);
+    if (this._isLoading) {
+      return;
+    }
+    const moviesTopRaited = this._moviesModel.getMovies().slice().sort(compareTotalRating);
     const movieCount = moviesTopRaited.length;
     if (movieCount === 0) {
       return;
@@ -295,7 +318,10 @@ export default class MovieList {
   }
 
   _renderListMostComment() {
-    const moviesMostCommented = this._getMovies().slice().sort(compareComments);
+    if (this._isLoading) {
+      return;
+    }
+    const moviesMostCommented = this._moviesModel.getMovies().slice().sort(compareComments);
     const movieCount = moviesMostCommented.length;
     if (movieCount === 0) {
       return;
