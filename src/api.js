@@ -1,4 +1,5 @@
-//import MoviesModel from './model/movies.js';
+import MoviesModel from './model/movies.js';
+import CommentsModel from './model/comments.js';
 
 const Method = {
   GET: 'GET',
@@ -11,29 +12,31 @@ const Method = {
 // };
 
 export default class Api {
-  constructor(endPoint, authorization, structure, structureModel) {
+  constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
-    this._structure = structure;
-    this._model = structureModel;
   }
 
   getData() {
-    return this._load({url: `${this._structure}`})
+    return this._load({url: 'movies'})
       .then(Api.toJSON)
-      .then((data) => data.map(this._model.adaptToClient));
+      .then((data) => data.map(MoviesModel.adaptToClient));
+  }
 
+  getComments(movieId) {
+    return this._load({url: `comments/${movieId}`})
+      .then(Api.toJSON);
   }
 
   updateData(data) {
     return this._load({
-      url: `${this._structure}/${data.id}`,
+      url: `movies/${data.id}`,
       method: Method.PUT,
-      body: JSON.stringify(this._model.adaptToServer(data)),
+      body: JSON.stringify(MoviesModel.adaptToServer(data)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
-      .then(this._model.adaptToClient);
+      .then(MoviesModel.adaptToClient);
   }
 
   _load({

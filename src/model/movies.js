@@ -23,7 +23,7 @@ export default class Movies extends AbstractObserver {
       throw new Error('Can\'t update unexisting task');
     }
 
-    this.movies = [
+    this._movies = [
       ...this._movies.slice(0, index),
       update,
       ...this._movies.slice(index + 1),

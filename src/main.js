@@ -11,7 +11,6 @@ import {
   FilterType,
   AUTHORIZATION,
   END_POINT,
-  Structure,
   UpdateType
 } from './const.js';
 import MovieListPresenter from './presenter/movie-list.js';
@@ -20,7 +19,7 @@ import HeaderBordPresenter from './presenter/header-footer';
 import Api from './api.js';
 
 
-const moviesApi = new Api(END_POINT, AUTHORIZATION, Structure.MOVIES, MoviesModel);
+const moviesApi = new Api(END_POINT, AUTHORIZATION);
 const moviesModel = new MoviesModel();
 const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
@@ -30,7 +29,7 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const siteBodyElement = document.querySelector('body');
 
-const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel);
+const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel, moviesApi);
 const headerFooterPresenter = new HeaderBordPresenter(siteHeaderElement, siteFooterElement, moviesModel);
 
 let statisticsComponent = null;

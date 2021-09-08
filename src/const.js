@@ -80,9 +80,10 @@ export const UpdateType = {
   PATCH: 'PATCH',
   PATCH_POPUP: 'PATCH_POPUP',
   MINOR: 'MINOR',
-  POPUP: 'POPUP',
+  MINOR_POPUP: 'MINOR_POPUP',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  INIT_POPUP: 'INIT_POPUP',
 };
 
 export const FilterType = {

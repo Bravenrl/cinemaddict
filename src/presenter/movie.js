@@ -11,12 +11,14 @@ import {
 } from '../const.js';
 import { getTodayDate } from '../utils/movie.js';
 
+
 export default class Movie {
-  constructor(listComponent, changeData, popupPresenter) {
+  constructor(listComponent, changeData, popupPresenter, commentsModel) {
     this._listComponent = listComponent;
     this._changeData = changeData;
     this._popupPresenter = popupPresenter;
     this._movieCardComponent = null;
+    this._commentsModel = commentsModel;
 
 
     this._listContainerElement = this._listComponent.getListContainer();
@@ -56,7 +58,7 @@ export default class Movie {
   }
 
   _handleMovieCardClick() {
-    this._popupPresenter.resetPopup();
+    this._popupPresenter.hidePopup();
     this._popupPresenter.showNewPopup(this._movie);
   }
 
