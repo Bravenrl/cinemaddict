@@ -28,6 +28,7 @@ export default class Popup {
     this._commentsModel = commentsModel;
     this._popupComponent = null;
     this._api = new Api(END_POINT, AUTHORIZATION);
+    this._isLoaded = false;
 
     this._escKeydownHendler = this._escKeydownHendler.bind(this);
     this._submitKeydownHendler = this._submitKeydownHendler.bind(this);
@@ -45,7 +46,12 @@ export default class Popup {
       this._movieComments = [];
       this._api.getComments(this._movie.id)
         .then((data) => {
+          this._isLoaded = true;
           this._commentsModel.setComments(UpdateType.INIT_POPUP, data, this._movie);
+        })
+        .catch(() => {
+          this._isLoaded = false;
+          this._commentsModel.setComments(UpdateType.INIT_POPUP, []);
         });
       return;
     }
@@ -57,7 +63,7 @@ export default class Popup {
     this._movie = movie;
     this._getComments();
     const prevPopupComponent = this._popupComponent;
-    this._popupComponent = new PopupView(this._movie, this._movieComments);
+    this._popupComponent = new PopupView(this._movie, this._movieComments, this._isLoaded);
     this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
     this._popupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._popupComponent.setAddToFavoritesHandler(this._handleAddToFavoritesClick);
@@ -133,7 +139,6 @@ export default class Popup {
   }
 
   _hadleDeleteCommentClick(updateId) {
-    console.log(this._movieComments);
     const updatedComment = (this._movieComments).find((comment) => comment.id === `${updateId}`);
     const updatedMovie = this._movie.comments.filter((comment) => comment !== updateId);
     this._movie.comments = updatedMovie;

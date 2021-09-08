@@ -60,7 +60,7 @@ const createCommentsTemplate = (comments, isComments) => (isComments) ? (`
 
 const createNewComentEmojiTemplate = (isEmoji, commentEmoji) => (isEmoji) ? (`<img src="images/emoji/${commentEmoji}.png" width="55" height="55" alt="emoji-${commentEmoji}">`) : '';
 
-const createPopupTemplate = (data, movie) => {
+const createPopupTemplate = (data, movie, isLoaded) => {
   const {
     userDetails,
     comments,
@@ -141,7 +141,7 @@ const createPopupTemplate = (data, movie) => {
       <section class="film-details__comments-wrap">
 
 
-        ${createCommentsTemplate(comments, isComments)}
+        ${(isLoaded) ? createCommentsTemplate(comments, isComments) : '<h3 class="film-details__comments-title">Comments are not available now. Network error.</h3>'}
 
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
@@ -160,10 +160,11 @@ const createPopupTemplate = (data, movie) => {
 };
 
 export default class Popup extends SmartView {
-  constructor(movie, comments) {
+  constructor(movie, comments, isLoaded) {
     super();
     this._movie = movie;
     this._comments = comments;
+    this._isLoaded = isLoaded;
     this._data = Popup.parseMovieToData(movie, comments);
     this._clickCloseButtonHandler = this._clickCloseButtonHandler.bind(this);
     this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
@@ -295,7 +296,7 @@ export default class Popup extends SmartView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data, this._movie);
+    return createPopupTemplate(this._data, this._movie, this._isLoaded);
   }
 
   getData() {

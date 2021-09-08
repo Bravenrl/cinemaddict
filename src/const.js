@@ -114,8 +114,7 @@ export const DateType = {
   YEAR: 'year',
 };
 
-export const Structure = {
-  MOVIES: 'movies',
-  COMMENTS: 'comments',
+export const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
 };
-

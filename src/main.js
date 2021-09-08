@@ -55,9 +55,9 @@ headerFooterPresenter.init();
 filterPresenter.init();
 moviePresenter.init();
 
-moviesApi.getData()
-  .then((data) => {
-    moviesModel.setMovies(UpdateType.INIT, data);
+moviesApi.getMovies()
+  .then((movies) => {
+    moviesModel.setMovies(UpdateType.INIT, movies);
   })
   .catch(() => {
     moviesModel.setMovies(UpdateType.INIT, []);

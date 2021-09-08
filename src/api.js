@@ -1,15 +1,6 @@
 import MoviesModel from './model/movies.js';
-import CommentsModel from './model/comments.js';
+import { Method } from './const.js';
 
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-};
-
-// const SuccessHTTPStatusRange = {
-//   MIN: 200,
-//   MAX: 299,
-// };
 
 export default class Api {
   constructor(endPoint, authorization) {
@@ -17,10 +8,10 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  getData() {
+  getMovies() {
     return this._load({url: 'movies'})
       .then(Api.toJSON)
-      .then((data) => data.map(MoviesModel.adaptToClient));
+      .then((movies) => movies.map(MoviesModel.adaptToClient));
   }
 
   getComments(movieId) {
@@ -28,11 +19,11 @@ export default class Api {
       .then(Api.toJSON);
   }
 
-  updateData(data) {
+  updateMovie(movie) {
     return this._load({
-      url: `movies/${data.id}`,
+      url: `movies/${movie.id}`,
       method: Method.PUT,
-      body: JSON.stringify(MoviesModel.adaptToServer(data)),
+      body: JSON.stringify(MoviesModel.adaptToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
