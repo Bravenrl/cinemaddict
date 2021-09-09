@@ -47,7 +47,7 @@ export default class Filter {
   }
 
   _getFilters() {
-    const movies = this._moviesModel.movies;
+    const movies = this._moviesModel.getMovies();
 
     return [
       {

@@ -3,15 +3,21 @@ import AbstractObserver from '../utils/abstract-observer.js';
 export default class Comments extends AbstractObserver {
   constructor() {
     super();
-    this._comments = [];
+    this._comments = null;
   }
 
-  get comments() {
+  removeComments() {
+    this._comments = null;
+  }
+
+  getComments() {
     return this._comments;
   }
 
-  set comments(comments) {
+  setComments(updateType, comments, movie) {
     this._comments = comments.slice();
+
+    this._notify(updateType, movie);
   }
 
   addComment(updateType, updateMovie, updateComment) {
@@ -37,4 +43,21 @@ export default class Comments extends AbstractObserver {
 
     this._notify(updateType, updateMovie);
   }
+
+  static adaptToClient(comment) {
+    const adaptedComment = Object.assign(
+      {},
+      comment,
+    );
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+    const adaptedComment = Object.assign(
+      {},
+      comment,
+    );
+    return adaptedComment;
+  }
+
 }

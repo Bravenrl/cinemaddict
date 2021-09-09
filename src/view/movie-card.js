@@ -3,13 +3,8 @@ import { humanizeMovieTime, getYear } from '../utils/movie.js';
 
 const isActive = (details) => (details) ? 'film-card__controls-item--active' : '';
 
-const getDescription = (descriptions) => {
-  const fullDescription = descriptions.join(' ');
-  if (fullDescription.length > 140) {
-    return `${fullDescription.slice(0,139)}...`;
-  }
-  return fullDescription;
-};
+const getDescription = (descriptions) => descriptions.length > 140 ? `${descriptions.slice(0,139)}...` : descriptions;
+
 
 const createCardTemplate = (movie) => {
   const {comments, filmInfo,  userDetails} = movie;

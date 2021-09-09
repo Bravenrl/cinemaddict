@@ -1,35 +1,27 @@
 import StatisticView from './view/statistic.js';
-import FooterStatisticView from './view/footer-statistic.js';
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filter.js';
 import CommentsModel from './model/comments.js';
-import {
-  generateMovie
-} from './mock/movie.js';
-import {
-  allComments
-} from './mock/comment.js';
 import {
   render,
   remove
 } from './utils/render.js';
 import {
   RenderPosition,
-  CardCount,
-  FilterType
+  FilterType,
+  AUTHORIZATION,
+  END_POINT,
+  UpdateType
 } from './const.js';
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterNavigationPresenter from './presenter/filter.js';
-import HeaderBordPresenter from './presenter/header.js';
+import HeaderBordPresenter from './presenter/header-footer';
+import Api from './api.js';
 
 
-const movies = new Array(CardCount.GENERAL).fill().map(generateMovie);
-
-movies.forEach((movie) => movie.comments = allComments[movie.id].map((comment) => comment.id));
-
+const moviesApi = new Api(END_POINT, AUTHORIZATION);
 const moviesModel = new MoviesModel();
 const commentsModel = new CommentsModel();
-moviesModel.movies = movies;
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
@@ -37,13 +29,8 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const siteBodyElement = document.querySelector('body');
 
-const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel);
-const headerBordPresenter = new HeaderBordPresenter(siteHeaderElement, moviesModel);
-
-headerBordPresenter.init();
-
-moviePresenter.init();
-
+const moviePresenter = new MovieListPresenter(siteMainElement, siteBodyElement, moviesModel, filterModel, commentsModel, moviesApi);
+const headerFooterPresenter = new HeaderBordPresenter(siteHeaderElement, siteFooterElement, moviesModel);
 
 let statisticsComponent = null;
 const handleSiteMenuClick = (target) => {
@@ -51,7 +38,7 @@ const handleSiteMenuClick = (target) => {
     if (statisticsComponent!==null) {
       return;
     }
-    statisticsComponent = new StatisticView(moviesModel.movies);
+    statisticsComponent = new StatisticView(moviesModel.getMovies());
     moviePresenter.destroy();
     render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
     return;
@@ -62,7 +49,17 @@ const handleSiteMenuClick = (target) => {
   }
   statisticsComponent=null;
 };
-
 const filterPresenter = new FilterNavigationPresenter(siteMainElement, filterModel, moviesModel, handleSiteMenuClick);
+
+headerFooterPresenter.init();
 filterPresenter.init();
-render(siteFooterElement, new FooterStatisticView(movies.length), RenderPosition.BEFOREEND);
+moviePresenter.init();
+
+moviesApi.getMovies()
+  .then((movies) => {
+    moviesModel.setMovies(UpdateType.INIT, movies);
+  })
+  .catch(() => {
+    moviesModel.setMovies(UpdateType.INIT, []);
+  });
+

@@ -1,3 +1,6 @@
+export const AUTHORIZATION = 'Basic QnJhdmVuOjEyMzQ1';
+export const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
+
 export const Emoji = {
   smile: './images/emoji/smile.png',
   sleeping: './images/emoji/sleeping.png',
@@ -36,20 +39,11 @@ export const CardCount = {
 };
 
 export const CardTitle = {
-  ALL: 'All movies',
+  ALL: 'All movies. Upcoming',
   TOP_RATED: 'Top rated',
   MOST_COMMENTED : 'Most commented',
-};
-
-export const ListTitle = {
-  ALL_MOVIES: 'All movies. Upcoming',
-  EMPTY: 'There are no movies in our database',
   LOADING: 'Loading...',
-};
-
-export const CssClass = {
-  SECTION: 'films-list--extra',
-  HEADING: 'visually-hidden',
+  EMPTY: 'Empty',
 };
 
 export const Mode = {
@@ -86,8 +80,10 @@ export const UpdateType = {
   PATCH: 'PATCH',
   PATCH_POPUP: 'PATCH_POPUP',
   MINOR: 'MINOR',
-  POPUP: 'POPUP',
+  MINOR_POPUP: 'MINOR_POPUP',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  INIT_POPUP: 'INIT_POPUP',
 };
 
 export const FilterType = {
@@ -116,4 +112,9 @@ export const DateType = {
   WEEK: 'week',
   MONTH: 'month',
   YEAR: 'year',
+};
+
+export const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
 };
