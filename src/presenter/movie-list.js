@@ -98,7 +98,9 @@ export default class MovieList {
         });
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, updateMovie, updateComment);
+        this._api.deleteComment(updateComment.id).then(() => {
+          this._commentsModel.deleteComment(updateType, updateMovie, updateComment);
+        });
         break;
       case UserAction.ADD_COMMENT:
         this._commentsModel.addComment(updateType, updateMovie, updateComment);

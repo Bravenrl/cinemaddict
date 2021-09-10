@@ -101,6 +101,7 @@ export default class Popup {
       document.removeEventListener('keydown', this._escKeydownHendler);
       document.removeEventListener('keydown', this._submitKeydownHendler);
       this._mode = Mode.DEFAULT;
+      this._isLoaded = false;
       this._commentsModel.removeComments();
     }
   }
