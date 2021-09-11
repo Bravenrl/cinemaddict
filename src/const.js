@@ -1,5 +1,6 @@
 export const AUTHORIZATION = 'Basic QnJhdmVuOjEyMzQ1';
 export const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
+export const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export const Emoji = {
   smile: './images/emoji/smile.png',
@@ -120,3 +121,14 @@ export const Method = {
   POST: 'POST',
   DELETE: 'DELETE',
 };
+
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+  LOADING: 'LOADING',
+  LOADED: 'LOADED',
+  LOAD_ERR: 'LOAD_ERR',
+};
+
+

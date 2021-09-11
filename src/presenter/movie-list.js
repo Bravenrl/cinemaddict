@@ -21,7 +21,8 @@ import {
   UserAction,
   FilterType,
   CardTitle,
-  Mode
+  Mode,
+  State
 } from '../const.js';
 import { filter } from '../utils/filter.js';
 
@@ -38,6 +39,7 @@ export default class MovieList {
     this._moviesModel = moviesModel;
     this._movieBoardContainer = listContainer;
     this._popupContainer = popupContainer;
+
     this._renderedMovieCount = CardCount.GENERAL_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filterType = FilterType.ALL;
@@ -57,7 +59,6 @@ export default class MovieList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortMovies = this._handleSortMovies.bind(this);
 
-
     this._popupPresenter = new PopupCard(this._popupContainer, this._handleViewAction, this._commentsModel);
   }
 
@@ -73,7 +74,6 @@ export default class MovieList {
         return filtredMovies.sort(compareTotalRating);
     }
     return filtredMovies;
-
   }
 
   init() {
@@ -98,15 +98,24 @@ export default class MovieList {
         });
         break;
       case UserAction.DELETE_COMMENT:
+        this._popupPresenter.setViewState(State.DELETING);
         this._api.deleteComment(updateComment.id).then(() => {
           this._commentsModel.deleteComment(updateType, updateMovie, updateComment);
-        });
+        })
+          .catch(() => {
+            this._popupPresenter.setViewState(State.ABORTING);
+          });
         break;
       case UserAction.ADD_COMMENT:
+        this._popupPresenter.setViewState(State.SAVING);
         this._api.addComment(updateMovie.id, updateComment).then((response) => {
+          this._commentsModel.setComments('', response.comments, updateMovie);
           this._moviesModel.updateMovie(updateType, response.movie);
-          this._commentsModel.setComments(UpdateType.INIT_POPUP, response.comments, updateMovie);
-        });
+          this._popupPresenter.resetPopup(response.movie);
+        })
+          .catch(() => {
+            this._popupPresenter.setViewState(State.ABORTING);
+          });
     }
   }
 
@@ -137,7 +146,7 @@ export default class MovieList {
         }
         this._clearListMostComment();
         this._renderListMostComment();
-        this._popupPresenter.showNewPopup(data);
+        this._popupPresenter.initPopup(data);
         break;
 
       case UpdateType.MINOR_POPUP:
@@ -243,7 +252,6 @@ export default class MovieList {
       this._showMoreButtonComponent = null;
     }
     this._showMoreButtonComponent = new ShowMoreButtonView();
-
     render(this._listComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
@@ -261,7 +269,6 @@ export default class MovieList {
     const movieCount = this._getMovies().length;
     this._movieCardPresenter.forEach((presenter) => presenter.destroy());
     this._movieCardPresenter.clear();
-    //this._popupPresenter.hidePopup();
     remove(this._showMoreButtonComponent);
     remove(this._sortComponent);
     remove(this._listLoadingComponent);
@@ -347,6 +354,5 @@ export default class MovieList {
     this._moviesModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
     this._commentsModel.removeObserver(this._handleModelEvent);
-
   }
 }
