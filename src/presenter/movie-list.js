@@ -103,7 +103,10 @@ export default class MovieList {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, updateMovie, updateComment);
+        this._api.addComment(updateMovie.id, updateComment).then((response) => {
+          this._moviesModel.updateMovie(updateType, response.movie);
+          this._commentsModel.setComments(UpdateType.INIT_POPUP, response.comments, updateMovie);
+        });
     }
   }
 

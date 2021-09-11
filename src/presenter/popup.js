@@ -17,7 +17,6 @@ import {
   END_POINT,
   AUTHORIZATION
 } from '../const.js';
-import { nanoid } from 'nanoid';
 import Api from '../api.js';
 
 export default class Popup {
@@ -168,17 +167,12 @@ export default class Popup {
         return;
       }
       delete localComment.isEmoji;
-      const commentId = nanoid();
-      this._movie.comments.unshift(commentId);
       this._changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH_POPUP,
         this._movie,
         Object.assign({},
           localComment,
-          {id: commentId,
-            date: getTodayDate(),
-          },
         ),
       );
       this._popupComponent.reset(this._movie, this._movieComments);
