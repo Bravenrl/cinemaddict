@@ -246,7 +246,6 @@ export default class MovieList {
     movies.forEach((movie) => this._renderMovieCard(container, movie));
   }
 
-
   _renderShowMoreButton() {
     if (this._showMoreButtonComponent !== null) {
       this._showMoreButtonComponent = null;
