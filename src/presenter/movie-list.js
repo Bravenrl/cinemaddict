@@ -109,9 +109,9 @@ export default class MovieList {
       case UserAction.ADD_COMMENT:
         this._popupPresenter.setViewState(State.SAVING);
         this._api.addComment(updateMovie.id, updateComment).then((response) => {
-          this._commentsModel.setComments('', response.comments, updateMovie);
-          this._moviesModel.updateMovie(updateType, response.movie);
           this._popupPresenter.resetPopup(response.movie);
+          this._commentsModel.setComments(updateType, response.comments, updateMovie);
+          this._moviesModel.updateMovie(updateType, response.movie);
         })
           .catch(() => {
             this._popupPresenter.setViewState(State.ABORTING);

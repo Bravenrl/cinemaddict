@@ -70,8 +70,7 @@ export default class Popup {
 
   resetPopup(movie) {
     if (this._mode !== Mode.DEFAULT) {
-      const movieComments = this._commentsModel.getComments();
-      this._popupComponent.reset(movie, movieComments);
+      this._popupComponent.reset(movie, this._movieComments);
     }
   }
 
