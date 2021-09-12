@@ -1,8 +1,7 @@
 import PopupView from '../view/popup.js';
 import {
   isEscEvent,
-  getTodayDate,
-  isSubmitEvent
+  getTodayDate
 } from '../utils/movie.js';
 import {
   showPopup,
@@ -15,70 +14,51 @@ import {
   UpdateType,
   UserAction,
   END_POINT,
-  AUTHORIZATION
+  AUTHORIZATION,
+  State
 } from '../const.js';
-import { nanoid } from 'nanoid';
 import Api from '../api.js';
 
 export default class Popup {
   constructor(popupContainer, changeData, commentsModel) {
     this._popupContainer = popupContainer;
     this._changeData = changeData;
-    this._mode = Mode.DEFAULT;
     this._commentsModel = commentsModel;
-    this._popupComponent = null;
+
     this._api = new Api(END_POINT, AUTHORIZATION);
-    this._isLoaded = false;
+    this._popupComponent = null;
+    this._movieComments = null;
+    this._mode = Mode.DEFAULT;
+    this._loadState = State.LOADING;
 
     this._escKeydownHendler = this._escKeydownHendler.bind(this);
-    this._submitKeydownHendler = this._submitKeydownHendler.bind(this);
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleAddToFavoritesClick = this._handleAddToFavoritesClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._hadleDeleteCommentClick = this._hadleDeleteCommentClick.bind(this);
-
-    this._movieComments = null;
-  }
-
-  _getComments() {
-    if ((this._commentsModel.getComments() === null))  {
-      this._movieComments = [];
-      this._api.getComments(this._movie.id)
-        .then((data) => {
-          this._isLoaded = true;
-          this._commentsModel.setComments(UpdateType.INIT_POPUP, data, this._movie);
-        })
-        .catch(() => {
-          this._isLoaded = false;
-          this._commentsModel.setComments(UpdateType.INIT_POPUP, []);
-        });
-      return;
-    }
-
-    this._movieComments = this._commentsModel.getComments();
+    this._handleFormSubmitKeydown = this._handleFormSubmitKeydown.bind(this);
   }
 
   initPopup(movie) {
     this._movie = movie;
     this._getComments();
     const prevPopupComponent = this._popupComponent;
-    this._popupComponent = new PopupView(this._movie, this._movieComments, this._isLoaded);
+    this._popupComponent = new PopupView(this._movie, this._movieComments, this._loadState);
     this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseButtonClick);
     this._popupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._popupComponent.setAddToFavoritesHandler(this._handleAddToFavoritesClick);
     this._popupComponent.setAlreadyWatchedHandler(this._handleAlreadyWatchedClick);
     this._popupComponent.setCommentDeleteClickHandler(this._hadleDeleteCommentClick);
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmitKeydown);
     if (this._mode === Mode.SHOW) {
       replace(this._popupComponent, prevPopupComponent);
       document.body.classList.add('hide-overflow');
-      if (prevPopupComponent) {
+      if (prevPopupComponent !== null) {
         const data = prevPopupComponent.getData();
         this._popupComponent.restore(data);
+        remove(prevPopupComponent);
       }
-    }
-    if (prevPopupComponent !== null) {
-      remove(prevPopupComponent);
     }
   }
 
@@ -90,8 +70,7 @@ export default class Popup {
 
   resetPopup(movie) {
     if (this._mode !== Mode.DEFAULT) {
-      const movieComments = this._commentsModel.getComments();
-      this._popupComponent.reset(movie, movieComments);
+      this._popupComponent.reset(movie, this._movieComments);
     }
   }
 
@@ -99,10 +78,11 @@ export default class Popup {
     if (this._mode !== Mode.DEFAULT) {
       hidePopup(this._popupContainer, this._popupComponent);
       document.removeEventListener('keydown', this._escKeydownHendler);
-      document.removeEventListener('keydown', this._submitKeydownHendler);
       this._mode = Mode.DEFAULT;
+      this._loadState = State.LOADING;
       this._commentsModel.removeComments();
     }
+    this._popupComponent = null;
   }
 
   showNewPopup(movie) {
@@ -110,7 +90,44 @@ export default class Popup {
     this._mode = Mode.SHOW;
     showPopup(this._popupContainer, this._popupComponent);
     document.addEventListener('keydown', this._escKeydownHendler);
-    document.addEventListener('keydown', this._submitKeydownHendler);
+  }
+
+  setViewState(state) {
+    if (this._mode === Mode.DEFAULT) {
+      return;
+    }
+    const resetFormState = () => {
+      this._popupComponent.updateData({
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    switch (state) {
+      case State.SAVING:
+        this._popupComponent.updateData({
+          isSaving: true,
+        });
+        break;
+      case  State.ABORTING:
+        this._popupComponent.shake(resetFormState);
+    }
+  }
+
+  _getComments() {
+    if ((this._commentsModel.getComments() === null))  {
+      this._movieComments = [];
+      this._api.getComments(this._movie.id)
+        .then((data) => {
+          this._loadState = State.LOADED;
+          this._commentsModel.setComments(UpdateType.INIT_POPUP, data, this._movie);
+        })
+        .catch(() => {
+          this._loadState = State.LOAD_ERR;
+          this._commentsModel.setComments(UpdateType.INIT_POPUP, [], this._movie);
+        });
+      return;
+    }
+    this._movieComments = this._commentsModel.getComments();
   }
 
   _handlePopupCloseButtonClick() {
@@ -159,28 +176,15 @@ export default class Popup {
     }
   }
 
-  _submitKeydownHendler(evt) {
-    if (isSubmitEvent(evt)) {
-      evt.preventDefault();
-      const localComment = this._popupComponent.getLocalComment();
-      if ((localComment.comment === '') || (localComment.emotion ==='')) {
-        return;
-      }
-      delete localComment.isEmoji;
-      const commentId = nanoid();
-      this._movie.comments.unshift(commentId);
-      this._changeData(
-        UserAction.ADD_COMMENT,
-        UpdateType.PATCH_POPUP,
-        this._movie,
-        Object.assign({},
-          localComment,
-          {id: commentId,
-            date: getTodayDate(),
-          },
-        ),
-      );
-      this._popupComponent.reset(this._movie, this._movieComments);
+  _handleFormSubmitKeydown(localComment) {
+    if ((localComment.comment === '') || (localComment.emotion ==='')) {
+      return;
     }
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH_POPUP,
+      this._movie,
+      localComment,
+    );
   }
 }

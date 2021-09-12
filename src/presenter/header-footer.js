@@ -16,12 +16,12 @@ export default class HeaderBord {
     this._footerContainer = footerContainer;
     this._headerComponent = null;
     this._footerComponent = null;
-    this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._moviesModel.addObserver(this._handleModelEvent);
     this._updateMovie = null;
     this._isLoading = true;
-  }
 
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._moviesModel.addObserver(this._handleModelEvent);
+  }
 
   init() {
     this._renderHeader();

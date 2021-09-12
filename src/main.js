@@ -62,4 +62,3 @@ moviesApi.getMovies()
   .catch(() => {
     moviesModel.setMovies(UpdateType.INIT, []);
   });
-
