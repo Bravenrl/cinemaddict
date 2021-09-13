@@ -18,8 +18,7 @@ import {
   State
 } from '../const.js';
 import Api from '../api/api.js';
-import { isOnline } from '../utils/common.js';
-import { toast } from '../utils/toast.js';
+
 
 export default class Popup {
   constructor(popupContainer, changeData, commentsModel) {
@@ -158,10 +157,6 @@ export default class Popup {
   }
 
   _hadleDeleteCommentClick(updateId) {
-    if (!isOnline()) {
-      toast('You can\'t delete comment offline');
-      return;
-    }
     const updatedComment = (this._movieComments).find((comment) => comment.id === `${updateId}`);
     const updatedMovie = this._movie.comments.filter((comment) => comment !== updateId);
     this._movie.comments = updatedMovie;
@@ -183,10 +178,6 @@ export default class Popup {
   }
 
   _handleFormSubmitKeydown(localComment) {
-    if (!isOnline()) {
-      toast('You can\'t create comment offline');
-      return;
-    }
     if ((localComment.comment === '') || (localComment.emotion ==='')) {
       return;
     }
