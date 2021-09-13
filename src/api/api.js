@@ -1,6 +1,5 @@
-import MoviesModel from './model/movies.js';
-import { Method } from './const.js';
-
+import MoviesModel from '../model/movies.js';
+import { Method } from '../const.js';
 
 export default class Api {
   constructor(endPoint, authorization) {

@@ -17,7 +17,7 @@ import {
   AUTHORIZATION,
   State
 } from '../const.js';
-import Api from '../api.js';
+import Api from '../api/api.js';
 
 export default class Popup {
   constructor(popupContainer, changeData, commentsModel) {

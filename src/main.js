@@ -16,7 +16,7 @@ import {
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterNavigationPresenter from './presenter/filter.js';
 import HeaderBordPresenter from './presenter/header-footer';
-import Api from './api.js';
+import Api from './api/api.js';
 
 
 const moviesApi = new Api(END_POINT, AUTHORIZATION);
@@ -62,3 +62,7 @@ moviesApi.getMovies()
   .catch(() => {
     moviesModel.setMovies(UpdateType.INIT, []);
   });
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
