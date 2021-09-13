@@ -18,6 +18,7 @@ export default class HeaderBord {
     this._footerComponent = null;
     this._updateMovie = null;
     this._isLoading = true;
+    this._movies = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._moviesModel.addObserver(this._handleModelEvent);
@@ -36,8 +37,8 @@ export default class HeaderBord {
     if (this._isLoading) {
       return;
     }
-    const movies = this._getMovies();
-    this._headerComponent = new HeaderProfileView(movies);
+    this._movies = this._getMovies();
+    this._headerComponent = new HeaderProfileView(this._movies);
     render(this._headerContainer, this._headerComponent, RenderPosition.BEFOREEND);
   }
 
@@ -50,7 +51,8 @@ export default class HeaderBord {
     render(this._footerContainer, this._footerComponent, RenderPosition.BEFOREEND);
   }
 
-  _handleModelEvent(updateType) {
+  _handleModelEvent(updateType, data) {
+
     switch (updateType) {
       case UpdateType.INIT:
         remove(this._footerComponent);
@@ -59,6 +61,10 @@ export default class HeaderBord {
         this._renderFooter();
         break;
       default:
+        this._updatedMovie = this._movies.find((movie) => movie.id === data.id);
+        if (this._updatedMovie.userDetails.alreadyWatched === data.userDetails.alreadyWatched) {
+          return;
+        }
         remove(this._headerComponent);
         this._renderHeader();
         break;
