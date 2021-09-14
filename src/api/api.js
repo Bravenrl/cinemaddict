@@ -56,7 +56,7 @@ export default class Api {
     return this._load({
       url: 'movies/sync',
       method: Method.POST,
-      body: JSON.stringify(movies),
+      body: JSON.stringify(movies.map(MoviesModel.adaptToServer)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON);

@@ -4,6 +4,7 @@ export const SHAKE_ANIMATION_TIMEOUT = 600;
 const STORE_PREFIX = 'cinemaddict';
 const STORE_VER = 'v15';
 export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+export const TOAST_SHOW_TIME = 5000;
 
 export const Emoji = {
   smile: './images/emoji/smile.png',
