@@ -12,7 +12,8 @@ import {
   AUTHORIZATION,
   END_POINT,
   UpdateType,
-  STORE_NAME
+  STORE_NAME,
+  ALERT_MESSAGE
 } from './const.js';
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterNavigationPresenter from './presenter/filter.js';
@@ -20,6 +21,7 @@ import HeaderBordPresenter from './presenter/header-footer';
 import Api from './api/api.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
+import { removeAlert, showAlert } from './utils/common.js';
 
 
 const moviesApi = new Api(END_POINT, AUTHORIZATION);
@@ -74,6 +76,7 @@ window.addEventListener('load', () => {
 
 window.addEventListener('online', () => {
   document.title = document.title.replace(' [offline]', '');
+  removeAlert();
   if (apiWithProvider.isSyncNeed) {
     apiWithProvider.sync();
   }
@@ -81,4 +84,5 @@ window.addEventListener('online', () => {
 
 window.addEventListener('offline', () => {
   document.title += ' [offline]';
+  showAlert(ALERT_MESSAGE);
 });
