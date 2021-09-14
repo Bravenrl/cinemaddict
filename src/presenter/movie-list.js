@@ -25,6 +25,8 @@ import {
   State
 } from '../const.js';
 import { filter } from '../utils/filter.js';
+import { isOnline } from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 
 export default class MovieList {
@@ -103,6 +105,9 @@ export default class MovieList {
           this._commentsModel.deleteComment(updateType, updateMovie, updateComment);
         })
           .catch(() => {
+            if (!isOnline()) {
+              toast('You can\'t delete comment offline');
+            }
             this._popupPresenter.setViewState(State.ABORTING);
           });
         break;
@@ -114,6 +119,9 @@ export default class MovieList {
           this._moviesModel.updateMovie(updateType, response.movie);
         })
           .catch(() => {
+            if (!isOnline()) {
+              toast('You can\'t create comment offline');
+            }
             this._popupPresenter.setViewState(State.ABORTING);
           });
     }

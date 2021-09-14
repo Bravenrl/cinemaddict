@@ -1,6 +1,5 @@
-import MoviesModel from './model/movies.js';
-import { Method } from './const.js';
-
+import MoviesModel from '../model/movies.js';
+import { Method } from '../const.js';
 
 export default class Api {
   constructor(endPoint, authorization) {
@@ -51,6 +50,16 @@ export default class Api {
       url: `comments/${commentId}`,
       method: Method.DELETE,
     });
+  }
+
+  sync(movies) {
+    return this._load({
+      url: 'movies/sync',
+      method: Method.POST,
+      body: JSON.stringify(movies.map(MoviesModel.adaptToServer)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({
