@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 import {
-  humanizeMovieTime, isSubmitEvent
+  humanizeMovieTime
 } from '../utils/movie.js';
 import {
   Emoji,
@@ -198,7 +198,6 @@ export default class Popup extends SmartView {
     this._emojiToggleHandler = this._emojiToggleHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
     this._clickCommentDeleteHandler = this._clickCommentDeleteHandler.bind(this);
-    this._keydownFormSubmitHandler = this._keydownFormSubmitHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -220,13 +219,6 @@ export default class Popup extends SmartView {
   _clickAddToFavoritesHandler(evt) {
     evt.preventDefault();
     this._callback.onAddToFavoritesClick(evt.target.name);
-  }
-
-  _keydownFormSubmitHandler(evt) {
-    if (isSubmitEvent(evt)) {
-      evt.preventDefault();
-      this._callback.onFormSubmit(Popup.parseDataToComment(this._data));
-    }
   }
 
   _clickCommentDeleteHandler(evt) {
@@ -279,7 +271,6 @@ export default class Popup extends SmartView {
     this.setAlreadyWatchedHandler(this._callback.onAlreadyWatchedClick);
     this.setAddToFavoritesHandler(this._callback.onAddToFavoritesClick);
     this.setCommentDeleteClickHandler(this._callback.onDeleteButtonClick);
-    this.setFormSubmitHandler(this._callback.onFormSubmit);
   }
 
   setCommentDeleteClickHandler(callback) {
@@ -309,17 +300,16 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('#favorite').addEventListener('click', this._clickAddToFavoritesHandler);
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.onFormSubmit = callback;
-    document.addEventListener('keydown', this._keydownFormSubmitHandler);
-  }
-
   getTemplate() {
     return createPopupTemplate(this._data, this._movie, this._state);
   }
 
   getData() {
     return this._data;
+  }
+
+  getLocalComment() {
+    return Popup.parseDataToComment(this._data);
   }
 
   reset(movie, comments) {

@@ -135,7 +135,7 @@ export const State = {
   LOAD_ERR: 'LOAD_ERR',
 };
 
-export const AlertStyle = {
+export const ALERT_STYLE = {
   zIndex: '200',
   position: 'absolute',
   left: '10%',
@@ -150,4 +150,11 @@ export const AlertStyle = {
 };
 
 export const ALERT_MESSAGE = 'Network error. You are in offline mode.';
+
+export const DescriptionLength = {
+  MAX: 140,
+  SLICE_START: 0,
+  SLICE_END: 139,
+};
+
 

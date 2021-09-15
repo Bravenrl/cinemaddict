@@ -1,9 +1,10 @@
 import Abstract from './absrtact';
 import { humanizeMovieTime, getYear } from '../utils/movie.js';
+import { DescriptionLength } from '../const';
 
 const isActive = (details) => (details) ? 'film-card__controls-item--active' : '';
 
-const getDescription = (descriptions) => descriptions.length > 140 ? `${descriptions.slice(0,139)}...` : descriptions;
+const getDescription = (descriptions) => descriptions.length > DescriptionLength.MAX ? `${descriptions.slice(DescriptionLength.SLICE_START,DescriptionLength.SLICE_END)}...` : descriptions;
 
 
 const createCardTemplate = (movie) => {

@@ -1,4 +1,4 @@
-import { AlertStyle } from '../const.js';
+import { ALERT_STYLE} from '../const.js';
 
 export const isOnline = () => window.navigator.onLine;
 
@@ -7,17 +7,17 @@ export const createStoreStructure = (items) =>
 
 export const showAlert = (message) => {
   const alertContainer = document.createElement('div');
-  alertContainer.style.zIndex = AlertStyle.zIndex;
-  alertContainer.style.position = AlertStyle.position;
-  alertContainer.style.left = AlertStyle.left;
-  alertContainer.style.top = AlertStyle.top;
-  alertContainer.style.right = AlertStyle.right;
-  alertContainer.style.height = AlertStyle.height;
-  alertContainer.style.padding = AlertStyle.padding;
-  alertContainer.style.fontSize = AlertStyle.fontSize;
-  alertContainer.style.textAlign = AlertStyle.textAlign;
-  alertContainer.style.lineHeight = AlertStyle.lineHeight;
-  alertContainer.style.backgroundColor = AlertStyle.backgroundColor;
+  alertContainer.style.zIndex = ALERT_STYLE.zIndex;
+  alertContainer.style.position = ALERT_STYLE.position;
+  alertContainer.style.left = ALERT_STYLE.left;
+  alertContainer.style.top = ALERT_STYLE.top;
+  alertContainer.style.right = ALERT_STYLE.right;
+  alertContainer.style.height = ALERT_STYLE.height;
+  alertContainer.style.padding = ALERT_STYLE.padding;
+  alertContainer.style.fontSize = ALERT_STYLE.fontSize;
+  alertContainer.style.textAlign = ALERT_STYLE.textAlign;
+  alertContainer.style.lineHeight = ALERT_STYLE.lineHeight;
+  alertContainer.style.backgroundColor = ALERT_STYLE.backgroundColor;
 
   alertContainer.textContent = message;
   alertContainer.classList.add('alert-item');

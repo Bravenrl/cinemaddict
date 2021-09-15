@@ -1,7 +1,8 @@
 import PopupView from '../view/popup.js';
 import {
   isEscEvent,
-  getTodayDate
+  getTodayDate,
+  isSubmitEvent
 } from '../utils/movie.js';
 import {
   showPopup,
@@ -32,13 +33,13 @@ export default class Popup {
     this._mode = Mode.DEFAULT;
     this._loadState = State.LOADING;
 
+    this._formSubmitKeydownHandler = this._formSubmitKeydownHandler.bind(this);
     this._escKeydownHendler = this._escKeydownHendler.bind(this);
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleAddToFavoritesClick = this._handleAddToFavoritesClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._hadleDeleteCommentClick = this._hadleDeleteCommentClick.bind(this);
-    this._handleFormSubmitKeydown = this._handleFormSubmitKeydown.bind(this);
   }
 
   initPopup(movie) {
@@ -51,7 +52,6 @@ export default class Popup {
     this._popupComponent.setAddToFavoritesHandler(this._handleAddToFavoritesClick);
     this._popupComponent.setAlreadyWatchedHandler(this._handleAlreadyWatchedClick);
     this._popupComponent.setCommentDeleteClickHandler(this._hadleDeleteCommentClick);
-    this._popupComponent.setFormSubmitHandler(this._handleFormSubmitKeydown);
     if (this._mode === Mode.SHOW) {
       replace(this._popupComponent, prevPopupComponent);
       document.body.classList.add('hide-overflow');
@@ -79,6 +79,7 @@ export default class Popup {
     if (this._mode !== Mode.DEFAULT) {
       hidePopup(this._popupContainer, this._popupComponent);
       document.removeEventListener('keydown', this._escKeydownHendler);
+      document.removeEventListener('keydown', this._formSubmitKeydownHandler);
       this._mode = Mode.DEFAULT;
       this._loadState = State.LOADING;
       this._commentsModel.removeComments();
@@ -91,6 +92,7 @@ export default class Popup {
     this._mode = Mode.SHOW;
     showPopup(this._popupContainer, this._popupComponent);
     document.addEventListener('keydown', this._escKeydownHendler);
+    document.addEventListener('keydown', this._formSubmitKeydownHandler);
   }
 
   setViewState(state) {
@@ -177,7 +179,12 @@ export default class Popup {
     }
   }
 
-  _handleFormSubmitKeydown(localComment) {
+  _formSubmitKeydownHandler(evt) {
+    if (!isSubmitEvent(evt)) {
+      return;
+    }
+    const localComment = this._popupComponent.getLocalComment();
+    evt.preventDefault();
     if ((localComment.comment === '') || (localComment.emotion ==='')) {
       return;
     }
