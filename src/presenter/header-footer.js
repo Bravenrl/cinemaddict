@@ -1,5 +1,5 @@
 import HeaderProfileView from '../view/header-profile.js';
-import FooterStatistivView from '../view/footer-statistic.js';
+import FooterStatisticView from '../view/footer-statistic.js';
 import {
   render,
   remove
@@ -47,7 +47,7 @@ export default class HeaderBord {
     if (!this._isLoading) {
       moviesCount = this._getMovies().length;
     }
-    this._footerComponent = new FooterStatistivView(moviesCount);
+    this._footerComponent = new FooterStatisticView(moviesCount);
     render(this._footerContainer, this._footerComponent, RenderPosition.BEFOREEND);
   }
 

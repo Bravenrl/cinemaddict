@@ -3,14 +3,14 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 
-import { getAllGenres, getDateFrom, getRating, getDuration, getCountGenres, getTopGenre, getWatсhedMoviesInRange, getSortGenreKeys, getSortGenreValues } from '../utils/stats.js';
+import { getAllGenres, getDateFrom, getRating, getDuration, getCountGenres, getTopGenre, getWatchedMoviesInRange, getSortGenreKeys, getSortGenreValues } from '../utils/stats.js';
 import { filter } from '../utils/filter.js';
 import { FilterType, DurationType, DateType } from '../const.js';
 
 const CANVAS_HEIGHT = 50;
 
 const renderChart = (statisticCtx, {movies, dateFrom, dateTo, target}) => {
-  const rangedMovies = getWatсhedMoviesInRange(movies, dateFrom, dateTo, target);
+  const rangedMovies = getWatchedMoviesInRange(movies, dateFrom, dateTo, target);
   const allGenres = getAllGenres(rangedMovies);
   if (allGenres.length === 0) {
     return;
@@ -77,7 +77,7 @@ const renderChart = (statisticCtx, {movies, dateFrom, dateTo, target}) => {
 
 
 const createStatisticTemplate = ({movies, dateFrom, dateTo, target}) => {
-  const rangedMovies = getWatсhedMoviesInRange(movies, dateFrom, dateTo, target);
+  const rangedMovies = getWatchedMoviesInRange(movies, dateFrom, dateTo, target);
   const allGenres = getAllGenres(rangedMovies);
   const countGenres = getCountGenres(allGenres);
 

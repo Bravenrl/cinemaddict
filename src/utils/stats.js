@@ -23,7 +23,7 @@ export const getRating = (movies) => {
   return '';
 };
 
-export const getWatсhedMoviesInRange = (movies, dateFrom, dateTo, target) =>
+export const getWatchedMoviesInRange = (movies, dateFrom, dateTo, target) =>
   movies.reduce((moviesInRange, movie) => {
     if (target===DateType.ALL) {
       moviesInRange.push(movie);
