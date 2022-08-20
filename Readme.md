@@ -1,6 +1,8 @@
-# Проект «Киноман»
+# [Проект «Киноман»](https://bravenrl.github.io/cinemaddict/)
 
 * Студент: [Роман Лозинский](https://up.htmlacademy.ru/ecmascript/15/user/1781597).
+
+The application is built on the OOP paradigm and uses the MVP architecture pattern. It uses class components, fetch method for server requests, webpack as a bundler. It`s Vanilla JS application without using frameworks and libraries.
 
 ### Техническое задание
 
